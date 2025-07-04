@@ -30,7 +30,7 @@ all:
     ansible_user: ansible
     user: aven
     ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOcIlNwYsyjIhu6Pg/+67BpORsW8RdnJnvs12XvWSV8g Homelab aven
-    timezone: America/Los_Angeles
+    timezone: America/Denver
 
     primary_domain: !vault |
       $ANSIBLE_VAULT;1.2;AES256;ansible
