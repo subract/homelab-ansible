@@ -1,0 +1,42 @@
+networks:
+  web:
+
+services:
+  palmr:
+    image: kyantech/palmr:latest
+    container_name: palmr
+    restart: unless-stopped
+
+    env_file: palmr.env
+    environment:
+      # ENABLE_S3: true
+      # S3_ENDPOINT: s3.us-west-002.backblazeb2.com
+      # S3_REGION: us-west-002
+      # S3_USE_SSL: true
+      # S3_FORCE_PATH_STYLE: false
+
+      SECURE_SITE: true 
+      PALMR_UID: 4015
+      PALMR_GID: 4015
+    ports:
+      - "5487:5487" # Web port
+      # - "3333:3333" # API port (optional, only if needed)
+    volumes:
+      - "{{ app_root}}/palmr:/app/server"
+
+    networks:
+      - web
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.palmr.rule: Host(`share.{{ tertiary_domain }}`)
+      traefik.http.routers.palmr.tls.certresolver: default
+      traefik.http.services.palmr.loadbalancer.server.port: 5487
+      # traefik.http.routers.palmr.middlewares: authelia
+      homepage.group: Apps
+      homepage.name: File sharing
+      homepage.icon: palmr.png
+      homepage.href: https://share.{{ tertiary_domain }}/
+      homepage.weight: 52
+      homepage.description: Palmr
+      homepage.siteMonitor: http://palmr:5487
