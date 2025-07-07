@@ -18,14 +18,13 @@ services:
       SECURE_SITE: true 
       PALMR_UID: 4015
       PALMR_GID: 4015
-    ports:
-      - "5487:5487" # Web port
-      # - "3333:3333" # API port (optional, only if needed)
+
     volumes:
       - "{{ app_root}}/palmr:/app/server"
 
     networks:
       - web
+      - web_ext
 
     labels:
       traefik.enable: true

@@ -73,6 +73,7 @@ services:
     networks: 
       - bar_assistant
       - web
+      - web_ext
     restart: unless-stopped
     depends_on:
       - bar_assistant
