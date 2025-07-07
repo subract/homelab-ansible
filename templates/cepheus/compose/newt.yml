@@ -1,0 +1,17 @@
+networks:
+  web_ext:
+    internal: true
+  internet:
+
+services:
+  newt:
+    image: fosrl/newt
+    container_name: newt
+    restart: unless-stopped
+    networks: 
+      - web_ext
+      - internet
+
+    env_file: newt.env
+    environment:
+      PANGOLIN_ENDPOINT: https://services.{{ tertiary_domain }}
