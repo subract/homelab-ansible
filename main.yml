@@ -79,10 +79,10 @@
     - backblaze
     - apprise
     - external_backup
-    - role: artis3n.tailscale
+    - role: artis3n.tailscale.machine
       tags: tailscale
       vars:
-        tailscale_args: --advertise-tags=tag:docker --snat-subnet-routes=false --accept-routes
+        tailscale_args: --advertise-tags=tag:onsite,tag:server --snat-subnet-routes=false --accept-routes
 
 - name: web01
   hosts: web01
@@ -95,14 +95,14 @@
 - name: offsite01
   hosts: offsite01
   become: true
-  gather_facts: false
+  # gather_facts: false
   ignore_unreachable: true
   roles:
     - more_users
-    - role: artis3n.tailscale
+    - role: artis3n.tailscale.machine
       tags: tailscale
       vars:
-        tailscale_args: --advertise-tags=tag:offsite
+        tailscale_args: --advertise-tags=tag:offsite --advertise-exit-node
     - dotfiles_copy
 
 - name: offsite02
@@ -113,7 +113,7 @@
   roles:
     - zigbee_udev
     - wpa_supplicant
-    - role: artis3n.tailscale
+    - role: artis3n.tailscale.machine
       tags: tailscale
       vars:
         tailscale_args: --advertise-tags=tag:offsite
@@ -130,7 +130,7 @@
 #     - arch_laptop
 #     - arch_secureboot
 #     - dotfiles_clone
-#     - role: artis3n.tailscale
+#     - role: artis3n.tailscale.machine
 #       tags: tailscale
 
 - name: Host-specific tasks
