@@ -17,12 +17,12 @@ services:
       PGID: 4004
       BASE_URL: https://change.{{ tertiary_domain }}/
       # USE_X_SETTINGS: 1
-      # HIDE_REFERER: true
-      # LOGGER_LEVEL: DEBUG
-      PLAYWRIGHT_DRIVER_URL: ws://playwright-chrome:3000/?stealth=1
+      HIDE_REFERER: true
+      LOGGER_LEVEL: WARNING
+      PLAYWRIGHT_DRIVER_URL: ws://changedetection-chrome:3000/?stealth=1
 
     depends_on:
-      playwright-chrome:
+      changedetection-chrome:
         condition: service_started
 
     volumes:
@@ -45,12 +45,13 @@ services:
       homepage.widget.url: http://changedetection:5000
       homepage.widget.key: ${CHANGEDETECTION_API_KEY}
 
-  playwright-chrome:
-    container_name: playwright-chrome
-    image: browserless/chrome:1.60-chrome-stable
-    user: 4000:4004
-    restart: unless-stopped
+  changedetection-chrome:
+    container_name: changedetection-chrome
+    hostname: changedetection-chrome
+    image: dgtlmoon/sockpuppetbrowser:latest
+    user: 4004:4004
 
+    restart: unless-stopped
     networks:
       - changedetection
 
@@ -65,3 +66,4 @@ services:
       CHROME_REFRESH_TIME: 600000
       DEFAULT_BLOCK_ADS: true
       DEFAULT_STEALTH: true
+      STATS_REFRESH_SECONDS: 86400
