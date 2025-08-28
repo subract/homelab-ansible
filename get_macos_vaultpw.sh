@@ -1,3 +1,2 @@
 #!/bin/sh
-
-/usr/bin/security find-generic-password -a aven -s ansible-vault  -w
+/usr/bin/security find-generic-password -s ansible-vault -w
