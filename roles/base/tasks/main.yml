@@ -17,13 +17,11 @@
     name:
       - vim
       - zsh
-      - tldr
       - tmux
       - curl
       - git
-      - ufw
       - rsync
-      - kitty-terminfo
+      - fzf
     state: present
 
 - name: Remove unwanted packages
