@@ -88,7 +88,7 @@ services:
 
   paperless_tika:
     container_name: paperless_tika
-    image: ghcr.io/paperless-ngx/tika:latest
+    image: docker.io/apache/tika:latest
     user: 4007:4007
     restart: unless-stopped
 
