@@ -1,0 +1,18 @@
+networks:
+  pangolin:
+
+services:
+  ipinfo:
+    container_name: ipinfo
+    image: peterdavehello/ipinfo.tw:latest
+    restart: unless-stopped
+
+    networks:
+      pangolin:
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.ipinfo.rule: Host(`ip.{{ tertiary_domain }}`)
+      traefik.http.routers.ipinfo.tls.certresolver: default
+      traefik.http.services.ipinfo.loadbalancer.server.port: 8080
+      use_traefik_instance: fossorial
