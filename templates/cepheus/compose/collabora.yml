@@ -1,0 +1,29 @@
+networks:
+  web:
+
+services:
+  collabora:
+    image: collabora/code
+    container_name: collabora
+    restart: unless-stopped
+    # user: "4011:4011"
+    cap_drop:
+      - ALL
+    cap_add:
+      - SYS_CHROOT
+      - SYS_ADMIN
+      - FOWNER
+      - CHOWN
+
+    environment:
+      extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
+
+
+    networks:
+      - web
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.collabora.rule: Host(`collabora.{{ tertiary_domain }}`)
+      traefik.http.routers.collabora.tls.certresolver: default
+      traefik.http.services.collabora.loadbalancer.server.port: 9980
