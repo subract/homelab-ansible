@@ -12,6 +12,8 @@ services:
       interval: "3s"
       timeout: "3s"
       retries: 15
+    labels:
+      use_traefik_instance: fossorial
 
   gerbil:
     image: fosrl/gerbil:latest
@@ -20,10 +22,9 @@ services:
     depends_on:
       pangolin:
         condition: service_healthy
-    networks:
-      - pangolin
+
     command:
-      - --reachableAt=http://gerbil:3003
+      - --reachableAt=http://gerbil:3004
       - --generateAndSaveKeyTo=/var/config/key
       - --remoteConfig=http://pangolin:3001/api/v1/gerbil/get-config
       - --reportBandwidthTo=http://pangolin:3001/api/v1/gerbil/receive-bandwidth
@@ -34,11 +35,19 @@ services:
       - SYS_MODULE
     ports:
       - 51820:51820/udp
+      - "{{ public_ip }}:443:443"
+      - "{{ public_ip }}:80:80"
+    networks:
+      - pangolin
+      - docker-socket
+    labels:
+      use_traefik_instance: fossorial
 
   traefik:
     image: traefik:v3.4
     container_name: traefik
     restart: unless-stopped
+    network_mode: service:gerbil
 
     depends_on:
       pangolin:
@@ -50,13 +59,9 @@ services:
     volumes:
       - "{{ app_root }}/fossorial/traefik:/etc/traefik:ro"
       - "{{ app_root }}/fossorial/letsencrypt:/letsencrypt"
-    ports:
-      - 443:443
-      - 80:80
-    networks:
-      - pangolin
-      - docker-socket
     env_file: traefik.env
+    labels:
+      use_traefik_instance: fossorial
 
   docker-socket-proxy:
     container_name: docker-socket-proxy
@@ -64,6 +69,7 @@ services:
     restart: unless-stopped
 
     environment:
+      LOG_LEVEL: warning
       CONTAINERS: 1
       NETWORKS: 1
       SERVICES: 1

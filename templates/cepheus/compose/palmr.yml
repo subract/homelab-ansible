@@ -1,5 +1,6 @@
 networks:
   web:
+  web_ext:
 
 services:
   palmr:
@@ -15,7 +16,7 @@ services:
       # S3_USE_SSL: true
       # S3_FORCE_PATH_STYLE: false
 
-      SECURE_SITE: true 
+      SECURE_SITE: true
       PALMR_UID: 4015
       PALMR_GID: 4015
 

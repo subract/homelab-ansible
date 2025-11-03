@@ -5,7 +5,7 @@ networks:
 
 services:
   newt:
-    image: fosrl/newt
+    image: fosrl/newt:latest
     container_name: newt
     restart: unless-stopped
     networks: 
