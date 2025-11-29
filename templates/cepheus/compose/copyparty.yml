@@ -1,0 +1,36 @@
+networks:
+  web:
+  web_ext:
+
+services:
+  copyparty:
+    image: copyparty/ac:latest
+    container_name: copyparty
+    hostname: party.{{ tertiary_domain }}
+    user: "4021:4021"  # should match the user/group of your fileshare volumes
+    networks:
+      - web
+      - web_ext
+
+    volumes:
+      - "{{ app_root}}/copyparty/cfg:/cfg"
+      - "{{ app_root}}/copyparty/data:/w"
+
+    stop_grace_period: 15s  # thumbnailer is allowed to continue finishing up for 10s after the shutdown signal
+    environment:
+      # ensures log-messages are not delayed (but can reduce speed a tiny bit)
+      PYTHONUNBUFFERED: 1
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.copyparty.rule: Host(`party.{{ tertiary_domain }}`)
+      traefik.http.routers.copyparty.tls.certresolver: default
+      traefik.http.services.copyparty.loadbalancer.server.port: 3923
+      # traefik.http.routers.copyparty.middlewares: authelia
+      homepage.group: Apps
+      homepage.name: Sharing
+      homepage.icon: copyparty.png
+      homepage.href: https://party.{{ tertiary_domain }}/
+      homepage.weight: 53
+      homepage.description: copyparty
+      homepage.siteMonitor: http://copyparty:3923
