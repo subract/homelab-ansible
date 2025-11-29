@@ -26,7 +26,7 @@ services:
       NEXTAUTH_URL: https://bookmarks.{{ tertiary_domain }}
       MEILI_ADDR: http://karakeep_meilisearch:7700
       BROWSER_WEB_URL: http://karakeep_chrome:9222
-      DATA_DIR: /data 
+      DATA_DIR: /data
       DISABLE_SIGNUPS: true
 
       OPENAI_BASE_URL: https://openrouter.ai/api/v1
@@ -36,7 +36,7 @@ services:
       EMBEDDING_TEXT_MODEL: nomic-embed-text
       INFERENCE_CONTEXT_LENGTH: 131072
 
-      DISABLE_PASSWORD_AUTH: true
+      # DISABLE_PASSWORD_AUTH: true
       OAUTH_WELLKNOWN_URL: https://auth.{{ tertiary_domain }}
       OAUTH_PROVIDER_NAME: auth.{{ tertiary_domain }}
       # Allowing signin to existing accounts with SSO
@@ -63,7 +63,7 @@ services:
 
     networks:
       karakeep:
-    
+
     command:
       - --no-sandbox
       - --disable-gpu
