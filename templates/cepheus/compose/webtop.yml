@@ -4,7 +4,8 @@ networks:
 services:
   webtop:
     container_name: webtop
-    image: lscr.io/linuxserver/webtop:arch-xfce-version-2024-08-09
+    # Pinned version bc updates are so big
+    image: lscr.io/linuxserver/webtop:ubuntu-xfce-kasm-version-bd179731
     restart: unless-stopped
 
     networks:
@@ -22,9 +23,9 @@ services:
       - "{{ app_root }}/webtop:/config"
 
     devices:
-      - /dev/dri:/dev/dri 
+      - /dev/dri:/dev/dri
 
-    shm_size: "1gb" 
+    shm_size: "1gb"
 
     labels:
       traefik.enable: true
