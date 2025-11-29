@@ -1,6 +1,6 @@
 zpool_name: rpool
 
-backblaze_include_dirs: /nvme01/app
+backblaze_include_dirs: /app
 backblaze_healthcheck_id: !vault |-
   $ANSIBLE_VAULT;1.2;AES256;ansible
   37316634383430626263386635653432393836356566626165363831663738653133343763303539
