@@ -1,22 +1,21 @@
 networks:
   web:
+  web_ext:
 
 services:
-  mc-survival-5:
-    container_name: mc-survival-5
+  mc-survival:
+    container_name: mc-survival
     image: itzg/minecraft-server
     restart: unless-stopped
     env_file:
       - minecraft.env
 
-    ports:
-      - 25569:25565
-
     networks:
       - web
+      - web_ext
 
     volumes:
-      - /opt/minecraft/mc-survival-231223-1.21:/data
+      - "{{app_root}}/games/minecraft/mc-survival-231223-1.21:/data"
 
     environment:
       TZ: {{ timezone }}
