@@ -1,0 +1,5 @@
+---
+- name: Restart ZED
+  service:
+    name: "{{ zfs_zed_service }}"
+    state: restarted

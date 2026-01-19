@@ -1,0 +1,7 @@
+---
+zfs_zed_package: zfs-zed
+zfs_zed_service: zed
+zfs_zed_conf_path: /etc/zfs/zed.d/zed.rc
+
+# Apprise configuration
+zfs_zed_apprise_enabled: true

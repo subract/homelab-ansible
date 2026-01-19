@@ -1,0 +1,25 @@
+---
+- name: Install zfs-zed
+  package:
+    name: "{{ zfs_zed_package }}"
+    state: present
+
+- name: Ensure ZED configuration directory exists
+  file:
+    path: /etc/zfs/zed.d
+    state: directory
+    mode: '0755'
+
+- name: Configure ntfy notifications
+  lineinfile:
+    path: "{{ zfs_zed_conf_path }}"
+    regexp: '^#?ZED_NTFY_TOPIC='
+    line: "ZED_NTFY_TOPIC={{ ntfy_topic }}"
+  when: zfs_zed_apprise_enabled
+  notify: Restart ZED
+
+- name: Enable and start ZED service
+  service:
+    name: "{{ zfs_zed_service }}"
+    enabled: yes
+    state: started
