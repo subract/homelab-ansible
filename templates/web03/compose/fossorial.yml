@@ -39,6 +39,7 @@ services:
       - "{{ public_ip }}:80:80"
       - "{{ public_ip }}:28361:28361"
       - "{{ public_ip }}:25569:25569"
+      - "{{ public_ip }}:42420:42420"
     networks:
       - pangolin
       - docker-socket

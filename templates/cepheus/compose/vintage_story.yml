@@ -1,0 +1,18 @@
+networks:
+  web:
+  web_ext:
+
+services:
+  vintage_story:
+    image: devidian/vintagestory:latest
+    container_name: vintage_story
+    restart: unless-stopped
+    volumes:
+      - "{{ app_root }}/games/vintage_story:/gamedata"
+    networks:
+      - web
+      - web_ext
+    # ports:
+    #   - 42420:42420
+    environment:
+      VS_DATA_PATH: /gamedata
