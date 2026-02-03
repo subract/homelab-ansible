@@ -1,6 +1,15 @@
 networks:
   web_ext:
     internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.2.0/23
+          # Smaller than subnet size, so we can guarantee that there are addresses
+          # outside of the "DHCP range" for containers that need fixed addresses
+          # (just newt)
+          ip_range: 172.18.2.0/24
+          gateway: 172.18.2.1
   internet:
 
 services:
@@ -8,9 +17,14 @@ services:
     image: fosrl/newt:latest
     container_name: newt
     restart: unless-stopped
-    networks: 
-      - web_ext
-      - internet
+    networks:
+      web_ext:
+        # Some apps need to be able to depend on the IP of the trusted proxies
+        # e.g. Nextcloud, which will refuse to look up a host via DNS
+        # This IP is inside the subnet, but outside the ip_range to avoid
+        # conflicts.
+        ipv4_address: 172.18.3.1
+      internet:
 
     env_file: newt.env
     environment:
