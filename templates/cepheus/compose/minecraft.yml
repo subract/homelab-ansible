@@ -26,7 +26,7 @@ services:
       MEMORY: 1G
       MOTD: Keelhaul Cay
       TYPE: PAPER
-      VERSION: 1.21
+      VERSION: 1.21.11
 
     labels:
       traefik.enable: false
