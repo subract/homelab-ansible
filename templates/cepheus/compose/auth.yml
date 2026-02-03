@@ -1,5 +1,6 @@
 networks:
   web:
+  web_ext:
   ldap:
   redis:
 
@@ -47,6 +48,7 @@ services:
 
     networks:
       web:
+      web_ext:
       ldap:
       redis:
 
@@ -103,14 +105,3 @@ services:
       - "{{ app_root }}/authelia/redis:/data"
     environment:
       TZ: {{ timezone }}
-
-
-  tsidp:
-    image: ghcr.io/arunoruto/tsidp:v1.82.5
-    container_name: tsidp
-    hostname: tsidp
-    networks: 
-      web:
-    environment:
-      TS_AUTHKEY: {{ tailscale_authkey }}
-      VERBOSE: false
