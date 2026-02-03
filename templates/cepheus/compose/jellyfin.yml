@@ -1,4 +1,4 @@
-networks: 
+networks:
   web:
 
 services:
@@ -26,15 +26,14 @@ services:
       - "{{ app_root }}/jellyfin/config:/config"
       - "{{ app_root }}/jellyfin/cache:/cache"
       # Read-only breaks trickplay
-      - type: bind
-        source: "{{ app_root }}/pinchflat/downloads"
-        target: /media/pinchflat
+      - "{{ app_root }}/pinchflat/downloads:/media/pinchflat"
+      - "{{ app_root }}/jellyfin/music/:/media/music"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
     environment:
       JELLYFIN_PublishedServerUrl: media.{{ tertiary_domain }}
-      
+
     labels:
       traefik.enable: true
       traefik.http.routers.media.rule: Host(`media.{{ tertiary_domain }}`)
