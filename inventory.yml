@@ -9,7 +9,7 @@ all:
     cepheus:
       backup_disk_serial: WDC_WD120EMFZ-11A6JA0_9JGKZ32T
     web03:
-      ansible_host: "rather.{{ tertiary_domain }}"
+      ansible_host: "services.{{ tertiary_domain }}"
       public_ip: !vault |
         $ANSIBLE_VAULT;1.2;AES256;ansible
         32303063333962623936386130666533343336393663663935323633373736656566333361633034

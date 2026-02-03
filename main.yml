@@ -10,25 +10,25 @@
   pre_tasks:
     - name: Update apt index
       tags: update, upgrade
-      when: ansible_os_family == "Debian"
+      when: ansible_facts["os_family"] == "Debian"
       changed_when: false
       apt:
         update_cache: true
     - name: Run apt dist upgrade
       tags: upgrade
-      when: ansible_os_family == "Debian"
+      when: ansible_facts["os_family"] == "Debian"
       apt:
         upgrade: dist
         autoremove: true
     - name: Update pacman index
       tags: update, upgrade
       changed_when: false
-      when: ansible_os_family == "Archlinux"
+      when: ansible_facts["os_family"] == "Archlinux"
       community.general.pacman:
         update_cache: true
     - name: Run pacman upgrade
       tags: upgrade
-      when: ansible_os_family == "Archlinux"
+      when: ansible_facts["os_family"] == "Archlinux"
       community.general.pacman:
         upgrade: true
 
@@ -68,13 +68,15 @@
 - name: cepheus
   hosts: cepheus
   become: true
-  gather_facts: false
+  gather_facts: true
   ignore_unreachable: false
   roles:
     - geerlingguy.ntp
     - inhibit_suspend
     - zigbee_udev
     - zfs
+    - role: zfs_zed
+      tags: zed
     - syncoid_sanoid
     - backblaze
     - apprise
@@ -84,41 +86,41 @@
       vars:
         tailscale_args: --advertise-tags=tag:onsite,tag:server --snat-subnet-routes=false --accept-routes
 
-- name: web01
-  hosts: web01
+- name: web03
+  hosts: web03
   become: true
   gather_facts: false
   ignore_unreachable: true
   roles:
     - backblaze
 
-- name: offsite01
-  hosts: offsite01
-  become: true
-  # gather_facts: false
-  ignore_unreachable: true
-  roles:
-    - more_users
-    - role: artis3n.tailscale.machine
-      tags: tailscale
-      vars:
-        tailscale_args: --advertise-tags=tag:offsite --advertise-exit-node
-    - dotfiles_copy
+# - name: offsite01
+#   hosts: offsite01
+#   become: true
+#   # gather_facts: false
+#   ignore_unreachable: true
+#   roles:
+#     - more_users
+#     - role: artis3n.tailscale.machine
+#       tags: tailscale
+#       vars:
+#         tailscale_args: --advertise-tags=tag:offsite --advertise-exit-node
+#     - dotfiles_copy
 
-- name: offsite02
-  hosts: offsite02
-  become: true
-  gather_facts: false
-  ignore_unreachable: true
-  roles:
-    - zigbee_udev
-    - wpa_supplicant
-    - role: artis3n.tailscale.machine
-      tags: tailscale
-      vars:
-        tailscale_args: --advertise-tags=tag:offsite
-    - dotfiles_copy
-    - liveness_monitor
+# - name: offsite02
+#   hosts: offsite02
+#   become: true
+#   gather_facts: false
+#   ignore_unreachable: true
+#   roles:
+#     - zigbee_udev
+#     - wpa_supplicant
+#     - role: artis3n.tailscale.machine
+#       tags: tailscale
+#       vars:
+#         tailscale_args: --advertise-tags=tag:offsite
+#     - dotfiles_copy
+#     - liveness_monitor
 
 # - name: ixion
 #   hosts: ixion
