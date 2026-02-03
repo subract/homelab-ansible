@@ -1,6 +1,7 @@
 networks:
   immich:
   web:
+  web_ext:
 
 services:
   immich_server:
@@ -11,7 +12,7 @@ services:
     # Quicksync
     devices:
       - /dev/dri:/dev/dri
-      
+
     volumes:
       - ${IMMICH_DATA_LOCATION}:/usr/src/app/upload
       - ${IMMICH_UPLOAD_LOCATION}:/usr/src/app/upload/library
@@ -24,6 +25,7 @@ services:
     networks:
       immich:
       web:
+      web_ext:
     restart: unless-stopped
 
     labels:
@@ -48,7 +50,7 @@ services:
     container_name: immich-machine-learning
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
     user: 4011:4011
-    
+
     deploy:
       resources:
         reservations:
