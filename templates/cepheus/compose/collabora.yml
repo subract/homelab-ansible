@@ -10,14 +10,19 @@ services:
     cap_drop:
       - ALL
     cap_add:
+      - MKNOD
       - SYS_CHROOT
       - SYS_ADMIN
       - FOWNER
       - CHOWN
 
     environment:
+      aliasgroup1: "https://file.{{ tertiary_domain }}:443"
       extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
 
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
     networks:
       - web
