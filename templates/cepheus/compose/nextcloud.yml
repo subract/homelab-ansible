@@ -1,18 +1,21 @@
 networks:
   web:
   db:
+  web_ext:
 
 services:
   nextcloud:
     container_name: nextcloud
     image: linuxserver/nextcloud:latest
     restart: unless-stopped
-    depends_on: 
+    depends_on:
       - nextcloud_mariadb
 
     volumes:
       - "{{ app_root }}/nextcloud/config:/config"
       - "{{ app_root }}/nextcloud/data:/data"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
     environment:
       PUID: 4011
@@ -20,24 +23,25 @@ services:
 
     networks:
       - web
+      - web_ext
       - db
 
     labels:
       traefik.enable: true
-      traefik.http.routers.file.rule: Host(`file.{{ tertiary_domain }}`)
-      traefik.http.routers.file.tls.certresolver: default
+      traefik.http.routers.cloud.rule: Host(`cloud.{{ tertiary_domain }}`)
+      traefik.http.routers.cloud.tls.certresolver: default
       traefik.serversTransport.forwardingTimeouts.dialTimeout: 0s
-      traefik.http.services.file.loadbalancer.server.port: 80
+      traefik.http.services.cloud.loadbalancer.server.port: 80
       homepage.group: Apps
       homepage.name: File sync
       homepage.icon: nextcloud.png
-      homepage.href: https://file.{{ tertiary_domain }}/
+      homepage.href: https://cloud.{{ tertiary_domain }}/
       homepage.weight: 20
       homepage.description: Nextcloud
       homepage.siteMonitor: http://nextcloud
       homepage.widget.type: nextcloud
       homepage.widget.fields: '["freespace", "numfiles"]'
-      homepage.widget.url: https://file.{{ tertiary_domain }}
+      homepage.widget.url: https://cloud.{{ tertiary_domain }}
       homepage.widget.key: ${NEXTCLOUD_API_KEY}
 
 
@@ -47,7 +51,7 @@ services:
     user: 4011:4011
 
     restart: unless-stopped
-    env_file: 
+    env_file:
       - nextcloud.env
 
     volumes:
