@@ -27,7 +27,7 @@ services:
       - "{{ app_root }}/jellyfin/cache:/cache"
       # Read-only breaks trickplay
       - "{{ app_root }}/pinchflat/downloads:/media/pinchflat"
-      - "{{ app_root }}/jellyfin/music/:/media/music"
+      # - "{{ app_root }}/jellyfin/music/:/media/music"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
