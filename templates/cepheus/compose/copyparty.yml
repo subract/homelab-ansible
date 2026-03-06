@@ -6,6 +6,7 @@ services:
   copyparty:
     image: copyparty/ac:latest
     container_name: copyparty
+    command: ["--localtime"]
     hostname: party.{{ tertiary_domain }}
     user: "4021:4021"  # should match the user/group of your fileshare volumes
     networks:
@@ -15,6 +16,9 @@ services:
     volumes:
       - "{{ app_root}}/copyparty/cfg:/cfg"
       - "{{ app_root}}/copyparty/data:/w"
+      - "/hdd/pit:/w/pit"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
     stop_grace_period: 15s  # thumbnailer is allowed to continue finishing up for 10s after the shutdown signal
     environment:
