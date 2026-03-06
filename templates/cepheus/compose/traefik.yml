@@ -24,6 +24,11 @@ services:
       TASKS: 1
       POST: 0 # default, prevents making changes
 
+    healthcheck:
+      test: wget --spider http://localhost:2375/version || exit 1
+      start_period: "30s"
+      start_interval: "3s"
+
     networks:
       - docker-socket
 
@@ -37,13 +42,14 @@ services:
     restart: on-failure:3
 
     depends_on:
-      - docker-socket-proxy
+      docker-socket-proxy:
+        condition: service_healthy
 
     ports:
       - 80:80
       - 443:443
 
-    env_file: 
+    env_file:
       - traefik.env
 
     networks:
@@ -78,6 +84,6 @@ services:
       homepage.siteMonitor: https://proxy.{{ tertiary_domain }}
       homepage.widget.type: traefik
       homepage.widget.url: https://proxy.{{ tertiary_domain }}
-      homepage.widget.username: aven 
+      homepage.widget.username: aven
       homepage.widget.password: ${TRAEFIK_PASSWORD}
       homepage.weight: 25
