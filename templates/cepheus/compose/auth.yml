@@ -66,8 +66,8 @@ services:
 
     healthcheck:
       interval: 60s
-      start_period: 30s
-      start_interval: 4s
+      start_period: 10s
+      start_interval: 1s
 
 
     labels:
