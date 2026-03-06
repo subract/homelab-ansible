@@ -14,7 +14,7 @@
     group: "{{ user }}"
 
   with_items:
-    - { src: vim/vimrc, dst: .vimrc }
+    - { src: vim/dot-vimrc, dst: .vimrc }
     # - { src: "i3", dst: ".config/i3" }
     # - { src: "i3status", dst: ".config/i3status" }
     # - { src: "kitty", dst: ".config/kitty" }
@@ -30,4 +30,4 @@
     owner: root
     group: root
   with_items:
-    - { src: vim/vimrc, dst: .vimrc }
+    - { src: vim/dot-vimrc, dst: .vimrc }
