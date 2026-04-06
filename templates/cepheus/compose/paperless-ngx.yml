@@ -34,10 +34,14 @@ services:
       PAPERLESS_FILENAME_DATE_ORDER: YMD
       PAPERLESS_DATE_ORDER: MYD
 
+    healthcheck:
+      start_period: 45s
+      start_interval: 5s
 
     volumes:
       - "{{ app_root}}/paperless/data:/usr/src/paperless/data"
       - "{{ app_root}}/paperless/media:/usr/src/paperless/media"
+      # - "{{ app_root}}/paperless/scripts:/opt/paperless/scripts"
       # - ./export:/usr/src/paperless/export
       # - ./consume:/usr/src/paperless/consume
 
@@ -64,6 +68,10 @@ services:
     image: docker.io/library/redis:7
     user: 4007:4007
     restart: unless-stopped
+
+    healthcheck:
+      start_period: 30s
+      start_interval: 5s
 
     networks:
       paperless:
