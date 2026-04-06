@@ -22,9 +22,9 @@ services:
       PGID: 4011
 
     networks:
-      - web
-      - web_ext
-      - db
+      web:
+      web_ext:
+      db:
 
     labels:
       traefik.enable: true
@@ -44,7 +44,6 @@ services:
       homepage.widget.url: https://cloud.{{ tertiary_domain }}
       homepage.widget.key: ${NEXTCLOUD_API_KEY}
 
-
   nextcloud_mariadb:
     container_name: nextcloud_mariadb
     image: mariadb:11.7
@@ -58,4 +57,4 @@ services:
       - "{{ app_root }}/nextcloud/mariadb/data:/var/lib/mysql"
 
     networks:
-      - db
+      db:

@@ -11,8 +11,8 @@ services:
     restart: unless-stopped
 
     networks:
-      - web
-      - ldap
+      web:
+      ldap:
 
     env_file: lldap.env
     environment:
@@ -35,7 +35,6 @@ services:
       homepage.description: lldap
       homepage.siteMonitor: http://lldap:17170
       homepage.weight: 20
-
 
   authelia:
     container_name: authelia
@@ -69,7 +68,6 @@ services:
       start_period: 10s
       start_interval: 1s
 
-
     labels:
       traefik.enable: true
       traefik.docker.network: doc_web
@@ -90,7 +88,6 @@ services:
       homepage.description: Authelia
       homepage.siteMonitor: http://authelia:9091
       homepage.weight: 15
-
 
   authelia_redis:
     container_name: authelia_redis

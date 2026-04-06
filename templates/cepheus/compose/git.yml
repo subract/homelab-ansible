@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
 
     networks:
-      - web
+      web:
 
     environment:
       USER_UID: 4002
@@ -42,7 +42,6 @@ services:
       homepage.siteMonitor: http://gitea
       homepage.weight: 50
 
-
   drone:
     container_name: drone
     image: drone/drone:2
@@ -50,8 +49,8 @@ services:
     user: 4002:4002
 
     networks:
-      - web
-      - drone
+      web:
+      drone:
 
     env_file: drone.env
     environment:
@@ -77,14 +76,13 @@ services:
       homepage.siteMonitor: http://drone
       homepage.weight: 55
 
-
   runner:
     container_name: runner
     restart: unless-stopped
     image: drone/drone-runner-docker:1
 
-    networks: 
-      - drone
+    networks:
+      drone:
 
     env_file: drone.env
     environment:

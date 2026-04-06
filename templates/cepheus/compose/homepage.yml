@@ -10,8 +10,8 @@ services:
     restart: unless-stopped
 
     networks:
-      - web
-      - docker-socket
+      web:
+      docker-socket:
 
     environment:
       PUID: 4005

@@ -4,14 +4,14 @@ networks:
 
 services:
   copyparty:
-    image: copyparty/ac:latest
     container_name: copyparty
+    image: copyparty/ac:latest
     command: ["--localtime"]
     hostname: party.{{ tertiary_domain }}
     user: "4021:4021"  # should match the user/group of your fileshare volumes
     networks:
-      - web
-      - web_ext
+      web:
+      web_ext:
 
     volumes:
       - "{{ app_root}}/copyparty/cfg:/cfg"

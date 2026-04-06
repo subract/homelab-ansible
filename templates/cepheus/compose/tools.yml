@@ -9,8 +9,8 @@ services:
     restart: unless-stopped
 
     networks:
-      - web
-      - web_ext
+      web:
+      web_ext:
 
     environment:
       TZ: {{ timezone }}
@@ -41,8 +41,8 @@ services:
     restart: unless-stopped
 
     networks:
-      - web
-      - web_ext
+      web:
+      web_ext:
 
     healthcheck:
       start_period: 30s

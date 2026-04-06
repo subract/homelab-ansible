@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
 
     networks:
-      - web
+      web:
 
     environment:
       PUID: 4012

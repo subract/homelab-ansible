@@ -3,11 +3,11 @@ networks:
 
 services:
   jellyfin:
-    image: jellyfin/jellyfin
     container_name: jellyfin
+    image: jellyfin/jellyfin
     hostname: jellyfin
     # network_mode: 'host'
-    restart: 'unless-stopped'
+    restart: unless-stopped
 
     networks:
       web:

@@ -81,7 +81,7 @@ services:
       immich:
 
     volumes:
-      - "{{ app_root}}/immich/redis:/data"
+      - "{{ app_root }}/immich/redis:/data"
 
 
   immich_postgres:

@@ -14,8 +14,8 @@ services:
         condition: service_healthy
 
     networks:
-      - web
-      - db
+      web:
+      db:
 
     env_file: miniflux.env
     environment:
@@ -30,7 +30,7 @@ services:
       OAUTH2_REDIRECT_URL: https://rss.{{ tertiary_domain }}/oauth2/oidc/callback
       OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.{{ tertiary_domain }}
       OAUTH2_USER_CREATION: 1
-    
+
     labels:
       traefik.enable: true
       traefik.http.routers.rss.rule: Host(`rss.{{ tertiary_domain }}`)
@@ -55,7 +55,7 @@ services:
     restart: unless-stopped
 
     networks:
-      - db
+      db:
 
     env_file: miniflux.env
     environment:

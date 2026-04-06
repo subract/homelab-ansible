@@ -10,9 +10,9 @@ services:
     restart: unless-stopped
 
     networks:
-      - web
-      - mqtt
-      - db
+      web:
+      mqtt:
+      db:
 
     environment:
       PUID: 4010
@@ -43,7 +43,7 @@ services:
       homepage.widget.fields: '["lights_on"]'
       homepage.widget.url: http://home_assistant:8123
       homepage.widget.key: ${HOMEASSISTANT_API_KEY}
-  
+
   node_red:
     container_name: node_red
     image: nodered/node-red
@@ -55,8 +55,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
     networks:
-      - web
-      - mqtt
+      web:
+      mqtt:
 
     environment:
       TZ: "{{ timezone }}"
@@ -82,13 +82,13 @@ services:
     restart: unless-stopped
 
     networks:
-      - mqtt
+      mqtt:
 
     volumes:
       - "{{ app_root }}/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf"
 
     labels:
-      - traefik.enable=false
+      traefik.enable: false
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -106,8 +106,8 @@ services:
       - /dev/zigbee_stick
 
     networks:
-      - web
-      - mqtt
+      web:
+      mqtt:
 
     environment:
       TZ: {{ timezone }}

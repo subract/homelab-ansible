@@ -11,11 +11,11 @@ services:
       - minecraft.env
 
     networks:
-      - web
-      - web_ext
+      web:
+      web_ext:
 
     volumes:
-      - "{{app_root}}/games/minecraft/mc-survival-231223-1.21:/data"
+      - "{{ app_root }}/games/minecraft/mc-survival-231223-1.21:/data"
 
     environment:
       TZ: {{ timezone }}

@@ -1,4 +1,4 @@
-networks: 
+networks:
   bar_assistant:
   web:
 
@@ -7,25 +7,25 @@ services:
     container_name: ba_meilisearch
     image: getmeili/meilisearch:v1.9 # Never use latest tag
     user: 33:33
-    networks: 
-      - bar_assistant
+    networks:
+      bar_assistant:
     env_file:
       - bar_assistant.env
     environment:
-      - MEILI_ENV=production
-      - MEILI_NO_ANALYTICS=true
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: true
     restart: unless-stopped
     volumes:
-      - /{{ app_root }}/bar_assistant/meilisearch:/meili_data
+      - "{{ app_root }}/bar_assistant/meilisearch:/meili_data"
 
   ba_redis:
     container_name: ba_redis
     image: redis
     user: 33:33
-    networks: 
-      - bar_assistant
+    networks:
+      bar_assistant:
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      ALLOW_EMPTY_PASSWORD: yes
     volumes:
       - "{{ app_root }}/bar_assistant/redis:/data"
     restart: unless-stopped
@@ -34,35 +34,35 @@ services:
     container_name: bar_assistant
     image: barassistant/server:v5
     # Incompatible with running as specified user, only uses 33
-    networks: 
-      - bar_assistant
+    networks:
+      bar_assistant:
     depends_on:
       - ba_meilisearch
       - ba_redis
     env_file:
       - bar_assistant.env
     environment:
-      - APP_URL=https://bar.{{ tertiary_domain }}/bar
-      - MEILISEARCH_HOST=http://ba_meilisearch:7700.
-      - REDIS_HOST=ba_redis
-      - CACHE_DRIVER=redis
-      - SESSION_DRIVER=redis
-      - ALLOW_REGISTRATION=false
+      APP_URL: https://bar.{{ tertiary_domain }}/bar
+      MEILISEARCH_HOST: http://ba_meilisearch:7700.
+      REDIS_HOST: ba_redis
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      ALLOW_REGISTRATION: false
     restart: unless-stopped
     volumes:
-      - /{{ app_root }}/bar_assistant/storage:/var/www/cocktails/storage/bar-assistant
+      - "{{ app_root }}/bar_assistant/storage:/var/www/cocktails/storage/bar-assistant"
 
   salt_rim:
     container_name: salt_rim
     image: barassistant/salt-rim:v4
     # Incompatible with running as specified user
-    networks: 
-      - bar_assistant
+    networks:
+      bar_assistant:
     depends_on:
       - bar_assistant
     environment:
-      - API_URL=https://bar.{{ tertiary_domain }}/bar
-      - MEILISEARCH_URL=https://bar.{{ tertiary_domain }}/search
+      API_URL: https://bar.{{ tertiary_domain }}/bar
+      MEILISEARCH_URL: https://bar.{{ tertiary_domain }}/search
     restart: unless-stopped
 
   ba_webserver:
@@ -70,10 +70,10 @@ services:
     image: nginx:alpine
     # Can't get this to work, either
     # user: 33:33
-    networks: 
-      - bar_assistant
-      - web
-      - web_ext
+    networks:
+      bar_assistant:
+      web:
+      web_ext:
     restart: unless-stopped
     depends_on:
       - bar_assistant
@@ -82,7 +82,7 @@ services:
     # ports:
     #   - 3000:3000
     volumes:
-      - /{{ app_root }}/bar_assistant/nginx.conf:/etc/nginx/conf.d/default.conf
+      - "{{ app_root }}/bar_assistant/nginx.conf:/etc/nginx/conf.d/default.conf"
 
     labels:
       traefik.enable: true

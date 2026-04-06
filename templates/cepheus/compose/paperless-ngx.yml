@@ -39,9 +39,9 @@ services:
       start_interval: 5s
 
     volumes:
-      - "{{ app_root}}/paperless/data:/usr/src/paperless/data"
-      - "{{ app_root}}/paperless/media:/usr/src/paperless/media"
-      # - "{{ app_root}}/paperless/scripts:/opt/paperless/scripts"
+      - "{{ app_root }}/paperless/data:/usr/src/paperless/data"
+      - "{{ app_root }}/paperless/media:/usr/src/paperless/media"
+      # - "{{ app_root }}/paperless/scripts:/opt/paperless/scripts"
       # - ./export:/usr/src/paperless/export
       # - ./consume:/usr/src/paperless/consume
 
@@ -62,7 +62,6 @@ services:
       homepage.widget.url: https://paper.{{ tertiary_domain }}
       homepage.widget.key: ${PAPERLESS_API_KEY}
 
-
   paperless_redis:
     container_name: paperless_redis
     image: docker.io/library/redis:7
@@ -77,8 +76,7 @@ services:
       paperless:
 
     volumes:
-      - "{{ app_root}}/paperless/redis:/data"
-
+      - "{{ app_root }}/paperless/redis:/data"
 
   paperless_gotenberg:
     container_name: paperless_gotenberg
