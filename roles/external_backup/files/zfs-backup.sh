@@ -21,7 +21,8 @@ logger -t zfs-backup "Starting backup for drive $DRIVE_ID"
 apprise -t 'Backup started' -b 'External drive syncing ZFS datasets'
 
 zpool import hdd
-/usr/sbin/syncoid -r --no-sync-snap --sendoptions=w rpool hdd/backup/cepheus-rpool
+/usr/sbin/syncoid -r --no-sync-snap --sendoptions=w rpool hdd/cepheus-rpool
+/usr/sbin/syncoid -r --no-sync-snap --sendoptions=w bpool hdd/cepheus-bpool
 zpool export hdd
 udisksctl power-off -b "$DEVICE_PATH"
 
