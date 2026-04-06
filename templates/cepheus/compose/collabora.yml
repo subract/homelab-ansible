@@ -17,7 +17,7 @@ services:
       - CHOWN
 
     environment:
-      aliasgroup1: "https://file.{{ tertiary_domain }}:443"
+      aliasgroup1: "https://cloud.{{ tertiary_domain }}:443"
       extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
 
     volumes:
