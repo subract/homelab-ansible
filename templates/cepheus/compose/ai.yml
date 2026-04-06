@@ -14,7 +14,11 @@ services:
 
     volumes:
       - "{{ app_root }}/open_webui:/app/backend/data"
-    
+
+    environment:
+      ENABLE_CHAT_RESPONSE_BASE64_IMAGE_URL_CONVERSION: true
+      CHAT_STREAM_RESPONSE_CHUNK_MAX_BUFFER_SIZE: "7000000"
+
     labels:
       traefik.enable: true
       traefik.http.routers.chat.rule: Host(`chat.{{ tertiary_domain }}`)
@@ -30,7 +34,7 @@ services:
 
   ollama:
     container_name: ollama
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.20.0
     restart: unless-stopped
 
     networks:
@@ -39,7 +43,7 @@ services:
 
     # environment:
     #   OLLAMA_DEBUG: "1"
-    
+
     volumes:
       - "{{ app_root }}/ollama:/root/.ollama"
 
