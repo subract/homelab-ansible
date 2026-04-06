@@ -16,7 +16,7 @@ services:
     volumes:
       - "{{ app_root}}/copyparty/cfg:/cfg"
       - "{{ app_root}}/copyparty/data:/w"
-      - "/hdd/pit:/w/pit"
+      # - "/hdd/pit:/w/pit"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
