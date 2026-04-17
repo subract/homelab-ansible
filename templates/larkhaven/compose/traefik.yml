@@ -5,7 +5,7 @@ networks:
 services:
   docker-socket-proxy:
     container_name: docker-socket-proxy
-    image: ghcr.io/tecnativa/docker-socket-proxy:0.2.0
+    image: ghcr.io/tecnativa/docker-socket-proxy:v0.4.2
     restart: unless-stopped
 
     environment:
@@ -23,7 +23,7 @@ services:
 
   traefik:
     container_name: traefik
-    image: traefik:3.1.1
+    image: traefik:3.6
     restart: on-failure:3
 
     depends_on:
@@ -33,7 +33,7 @@ services:
       - 80:80
       - 443:443
 
-    env_file: 
+    env_file:
       - traefik.env
 
     networks:
@@ -55,4 +55,4 @@ services:
       traefik.http.routers.api.middlewares: auth
       traefik.http.middlewares.auth.basicauth.users: ${TRAEFIK_USERS}
       # Below will cause Traefik to request a wildcard cert
-      # traefik.http.routers.api.tls.domains[0].main: "*.{{ quinary_domain }}"
+      traefik.http.routers.api.tls.domains[0].main: "*.{{ quinary_domain }}"

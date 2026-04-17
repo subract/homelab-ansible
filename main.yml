@@ -44,6 +44,24 @@
 
 # ...and finally, do role-specific tasks
 
+- name: larkhaven
+  hosts: larkhaven
+  become: true
+  # gather_facts: false
+  ignore_unreachable: true
+  roles:
+    - role: artis3n.tailscale.machine
+      tags: tailscale
+      vars:
+        tailscale_args: --advertise-tags=tag:offsite --advertise-exit-node
+    - dotfiles_copy
+    - geerlingguy.ntp
+    - inhibit_suspend
+    - apprise
+    - zigbee_udev
+    # - wpa_supplicant
+    - liveness_monitor
+
 - name: Docker roles
   hosts: docker
   become: true
@@ -93,34 +111,6 @@
   ignore_unreachable: true
   roles:
     - backblaze
-
-# - name: offsite01
-#   hosts: offsite01
-#   become: true
-#   # gather_facts: false
-#   ignore_unreachable: true
-#   roles:
-#     - more_users
-#     - role: artis3n.tailscale.machine
-#       tags: tailscale
-#       vars:
-#         tailscale_args: --advertise-tags=tag:offsite --advertise-exit-node
-#     - dotfiles_copy
-
-# - name: offsite02
-#   hosts: offsite02
-#   become: true
-#   gather_facts: false
-#   ignore_unreachable: true
-#   roles:
-#     - zigbee_udev
-#     - wpa_supplicant
-#     - role: artis3n.tailscale.machine
-#       tags: tailscale
-#       vars:
-#         tailscale_args: --advertise-tags=tag:offsite
-#     - dotfiles_copy
-#     - liveness_monitor
 
 # - name: ixion
 #   hosts: ixion
