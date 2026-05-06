@@ -19,6 +19,7 @@ services:
 
     env_file: miniflux.env
     environment:
+      LOG_LEVEL: warning
       RUN_MIGRATIONS: 1
       BASE_URL: https://rss.{{ tertiary_domain }}
       CLEANUP_ARCHIVE_UNREAD_DAYS: -1
@@ -30,6 +31,8 @@ services:
       OAUTH2_REDIRECT_URL: https://rss.{{ tertiary_domain }}/oauth2/oidc/callback
       OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.{{ tertiary_domain }}
       OAUTH2_USER_CREATION: 1
+      # Needed to save to Karakeep
+      INTEGRATION_ALLOW_PRIVATE_NETWORKS: 1
 
     labels:
       traefik.enable: true
@@ -69,4 +72,3 @@ services:
       test: ["CMD", "pg_isready", "-U", "miniflux"]
       start_interval: 5s
       start_period: 30s
-
