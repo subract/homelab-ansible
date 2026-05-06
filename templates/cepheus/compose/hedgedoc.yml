@@ -1,0 +1,54 @@
+networks:
+  web:
+  web_ext:
+
+services:
+  hedgedoc:
+    image: lscr.io/linuxserver/hedgedoc:latest
+    container_name: hedgedoc
+    restart: unless-stopped
+
+    env_file: hedgedoc.env
+
+    environment:
+      PUID: 4022
+      PGID: 4022
+      TZ: {{ timezone }}
+      CMD_LOGLEVEL: warn
+      CMD_DOMAIN: paste.{{ tertiary_domain }}
+      CMD_PROTOCOL_USESSL: true
+      CMD_ALLOW_ORIGIN: "[paste.{{ tertiary_domain }}]"
+      CMD_ALLOW_ANONYMOUS: false # guests can't create notes...
+      CMD_ALLOW_ANONYMOUS_EDITS: true # ...but they can edit them
+      CMD_DEFAULT_PERMISSION: limited # default new notes to only viewable by logged-in users
+      CMD_EMAIL: false # don't allow signing in with email/password - only OIDC
+      CMD_ALLOW_FREEURL: true # allow custom note slugs...
+      CMD_REQUIRE_FREEURL_AUTHENTICATION: true # ...but only if signed in
+
+
+      # Keycloak SSO configuration
+      CMD_OAUTH2_PROVIDERNAME: auth.{{ tertiary_domain }}
+      CMD_OAUTH2_CLIENT_ID: hedgedoc # from Keycloak
+      CMD_OAUTH2_USER_PROFILE_URL: https://auth.{{ tertiary_domain }}/api/oidc/userinfo
+      CMD_OAUTH2_TOKEN_URL: https://auth.{{ tertiary_domain }}/api/oidc/token
+      CMD_OAUTH2_AUTHORIZATION_URL: https://auth.{{ tertiary_domain }}/api/oidc/authorization
+      CMD_OAUTH2_USER_PROFILE_USERNAME_ATTR: sub
+      CMD_OAUTH2_USER_PROFILE_DISPLAY_NAME_ATTR: name
+      CMD_OAUTH2_USER_PROFILE_EMAIL_ATTR: email
+      # Per here https://shivering-isles.com/fixing-hedgedoc-profile-info-keycloak-20
+      CMD_OAUTH2_SCOPE: "openid email profile"
+
+    volumes:
+      - "{{ app_root }}/hedgedoc:/config"
+
+    networks:
+      - web_ext
+      - web
+
+    # labels:
+    #   traefik.enable: true
+    #   traefik.http.routers.paste.rule: Host(`paste.{{ tertiary_domain }}`)
+    #   traefik.http.routers.paste.tls.certresolver: default
+    #   traefik.http.services.paste.loadbalancer.server.port: 3000
+      # Require keycloak sign-in to access any pages
+      # traefik.http.routers.paste.middlewares: traefik-forward-auth
