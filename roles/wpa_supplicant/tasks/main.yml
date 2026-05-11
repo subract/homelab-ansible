@@ -9,6 +9,12 @@
   tags: config, wifi
   copy:
     src: "{{ inventory_hostname }}/wpa_supplicant.conf"
-    dest: /etc/wpa_supplicant.conf
+    dest: /etc/wpa_supplicant/wpa_supplicant-{{ wifi_interface }}.conf
     mode: "0600"
   notify: Restart wpa_supplicant
+
+- name: Enable wpa_supplicant for wifi interface
+  ansible.builtin.systemd:
+    name: "wpa_supplicant@{{ wifi_interface }}.service"
+    enabled: true
+    state: started
