@@ -59,7 +59,7 @@
     - inhibit_suspend
     - apprise
     - zigbee_udev
-    # - wpa_supplicant
+    - wpa_supplicant
     - liveness_monitor
 
 - name: Docker roles

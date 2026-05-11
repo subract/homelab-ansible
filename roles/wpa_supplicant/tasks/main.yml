@@ -1,4 +1,10 @@
 ---
+- name: Install packages
+  package:
+    state: present
+    name:
+      - wpasupplicant
+
 - name: Configure wpa_supplicant
   tags: config, wifi
   copy:
