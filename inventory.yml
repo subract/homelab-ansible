@@ -1,8 +1,6 @@
 ---
 all:
   hosts:
-    web01:
-      ansible_host: "{{ tertiary_domain }}"
     # offsite01:
     # offsite02:
     larkhaven:
