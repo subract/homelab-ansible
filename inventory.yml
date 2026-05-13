@@ -5,6 +5,9 @@ all:
     # offsite02:
     larkhaven:
       wifi_interface: wlp2s0
+      remote_backup_host: cepheus
+      remote_backup_src_filesystem: ssd
+      remote_backup_dst_filesystem: hdd/larkhaven
     # ixion:
     cepheus:
       backup_disk_serial: WDC_WD140EDGZ-11B1PA0_Y6GEB9PD
@@ -22,11 +25,7 @@ all:
       hosts:
         cepheus:
           app_root: /app
-        web01:
-          app_root: /opt
         web03:
-          app_root: /opt
-        offsite02:
           app_root: /opt
         larkhaven:
           app_root: /app
@@ -40,6 +39,8 @@ all:
     user: aven
     ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOcIlNwYsyjIhu6Pg/+67BpORsW8RdnJnvs12XvWSV8g Homelab aven
     timezone: America/Denver
+
+    remote_backup_user: zfs_backup
 
     primary_domain: !vault |
       $ANSIBLE_VAULT;1.2;AES256;ansible

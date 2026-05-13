@@ -9,6 +9,9 @@ log_and_notify_error() {
   local message="$1"
   logger -t zfs-backup "ERROR: $message"
   apprise -t 'Backup failed' -b "$message"
+  if zpool list -H -o name hdd >/dev/null 2>&1; then
+    zpool export hdd || logger -t zfs-backup "WARNING: Failed to export pool hdd during error cleanup"
+  fi
   udisksctl power-off -b "$DEVICE_PATH"
   exit 1
 }
@@ -20,9 +23,13 @@ fi
 logger -t zfs-backup "Starting backup for drive $DRIVE_ID"
 apprise -t 'Backup started' -b 'External drive syncing ZFS datasets'
 
-zpool import hdd
+if ! zpool list -H -o name hdd >/dev/null 2>&1; then
+  zpool import hdd
+fi
+
 /usr/sbin/syncoid -r --no-sync-snap --sendoptions=w rpool hdd/cepheus-rpool
 /usr/sbin/syncoid -r --no-sync-snap --sendoptions=w bpool hdd/cepheus-bpool
+
 zpool export hdd
 udisksctl power-off -b "$DEVICE_PATH"
 

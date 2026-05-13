@@ -1,0 +1,8 @@
+---
+- name: Grant receive permission to {{ remote_backup_user }}
+  tags: zfs, config
+  command: zfs allow -u {{ remote_backup_user }} receive,create,mount,destroy,rollback,compression,xattr,dnodesize,acltype,relatime,recordsize hdd/larkhaven
+  # args:
+  #   creates: /tmp/zfs_allow_{{ remote_backup_user }}_receive_hdd_cepheus-nvme01
+  register: zfs_allow_result
+  # changed_when: "'set' in zfs_allow_result.stdout"

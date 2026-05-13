@@ -25,7 +25,6 @@
     dest: /etc/sanoid/sanoid.conf
     mode: "0644"
   notify: Restart sanoid
-
 # - name: Configure backup sanoid
 #   tags: config, sanoid
 #   copy:
@@ -48,15 +47,3 @@
 #     job: /usr/sbin/syncoid -r --no-sync-snap nvme/enc hdd/enc;
 #       /usr/sbin/syncoid -r --no-sync-snap rpool hdd/enc/rpool;
 #       /usr/sbin/sanoid --configdir /etc/sanoid/backup/
-
-# Disabled while I'm living that metered connections lyfe :(
-#
-# - name: Add remote backup cron job
-#   tags: config, syncoid
-#   ansible.builtin.cron:
-#     name: Sync hdd to remote server
-#     minute: "0"
-#     hour: "4"
-#     job: >
-#       /usr/sbin/syncoid -r --no-sync-snap --skip-parent  --exclude {{ remote_exclude_dir }} --sendoptions=w --sshport 1984 --sshkey /root/.ssh/id_rsa  hdd/enc
-#       aven@{{ backup_host }}:hdd/enc

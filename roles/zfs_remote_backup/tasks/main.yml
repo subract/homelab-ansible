@@ -1,0 +1,16 @@
+---
+- name: Install sanoid and syncoid
+  tags: pkg, syncoid, sanoid
+  package:
+    name:
+      - sanoid
+
+- name: Add remote backup cron job
+  tags: config, syncoid
+  ansible.builtin.cron:
+    name: Sync {{ remote_backup_src_filesystem }} to {{ remote_backup_host }}
+    minute: "0"
+    hour: "4"
+    job: >
+      /usr/sbin/syncoid -r --no-sync-snap --no-privilege-elevation --sshkey /root/.ssh/id_ed25519 {{ remote_backup_src_filesystem }}
+      {{ remote_backup_user }}@{{ remote_backup_host }}:{{ remote_backup_dst_filesystem }}

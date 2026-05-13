@@ -50,6 +50,9 @@
   # gather_facts: false
   ignore_unreachable: true
   roles:
+    - syncoid_sanoid
+    - zfs_zed
+    - zfs_remote_backup
     - role: artis3n.tailscale.machine
       tags: tailscale
       vars:
@@ -89,6 +92,7 @@
   gather_facts: true
   ignore_unreachable: false
   roles:
+    - more_users
     - geerlingguy.ntp
     - inhibit_suspend
     - zigbee_udev
