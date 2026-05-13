@@ -1,3 +1,0 @@
-custom_users:
-  - name: zfs_receiver_cepheus
-    key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJIaRmHX1pAn3DPEApqgKDRwYqrMnjy6ZxhNmxjyFyc1 root@cepheus
