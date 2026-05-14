@@ -14,7 +14,7 @@ services:
       web:
       ldap:
 
-    env_file: lldap.env
+    env_file: auth.env
     environment:
       UID: 4003
       GID: 4003
