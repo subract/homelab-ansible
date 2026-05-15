@@ -22,6 +22,7 @@
       - git
       - rsync
       - fzf
+      - bind9-dnsutils
     state: present
 
 - name: Remove unwanted packages
