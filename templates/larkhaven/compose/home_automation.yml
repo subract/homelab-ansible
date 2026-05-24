@@ -30,6 +30,13 @@ services:
       traefik.http.routers.home.entrypoints: https
       traefik.http.routers.home.tls.certresolver: default
       traefik.http.services.home.loadbalancer.server.port: 8123
+      homepage.group: Admin
+      homepage.name: Home automation
+      homepage.icon: home-assistant.png
+      homepage.href: https://home.{{ quinary_domain }}/
+      homepage.weight: 5
+      homepage.description: Home Assistant
+      homepage.siteMonitor: http://home_assistant:8123
 
   node_red:
     container_name: node_red
@@ -53,6 +60,13 @@ services:
       traefik.http.routers.auto.entrypoints: https
       traefik.http.routers.auto.tls.certresolver: default
       traefik.http.services.auto.loadbalancer.server.port: 1880
+      homepage.group: Admin
+      homepage.name: Automation workflows
+      homepage.icon: node-red.png
+      homepage.href: https://auto.{{ quinary_domain }}/
+      homepage.weight: 64
+      homepage.description: Node-RED
+      homepage.siteMonitor: http://node_red:1880
 
   mosquitto:
     container_name: mosquitto
@@ -95,3 +109,10 @@ services:
       traefik.http.routers.zigbee.entrypoints: https
       traefik.http.routers.zigbee.tls.certresolver: default
       traefik.http.services.zigbee.loadbalancer.server.port: 8080
+      homepage.group: Admin
+      homepage.name: Mesh networking
+      homepage.icon: zigbee2mqtt.png
+      homepage.href: https://zigbee.{{ quinary_domain }}/
+      homepage.description: Zigbee2MQTT
+      homepage.siteMonitor: http://zigbee2mqtt:8080
+      homepage.weight: 65

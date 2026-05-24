@@ -1,0 +1,105 @@
+networks:
+  web:
+  paperless:
+
+services:
+  paperless:
+    container_name: paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+
+    depends_on:
+      - paperless_redis
+      - paperless_gotenberg
+      - paperless_tika
+
+    networks:
+      web:
+      paperless:
+
+    env_file: paperless.env
+    environment:
+      USERMAP_UID: 4007
+      USERMAP_GID: 4007
+      PAPERLESS_REDIS: redis://paperless_redis:6379
+      PAPERLESS_TIKA_ENABLED: 1
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gpaperless_gotenberg:3000
+      PAPERLESS_TIKA_ENDPOINT: http://paperless_tika:9998
+      PAPERLESS_URL: https://paper.{{ quinary_domain }}
+      PAPERLESS_TIME_ZONE: {{ timezone }}
+      # Continue and invalidate digital signatures - Paperless keeps originals as well
+      PAPERLESS_OCR_USER_ARGS: '{"continue_on_soft_render_error": true,"invalidate_digital_signatures": true}'
+      PAPERLESS_TASK_WORKERS: 2
+      PAPERLESS_THREADS_PER_WORKER: 4
+      PAPERLESS_FILENAME_DATE_ORDER: YMD
+      PAPERLESS_DATE_ORDER: MYD
+      PAPERLESS_DISABLE_REGULAR_LOGIN: true
+      PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS: true
+      PAPERLESS_SOCIAL_AUTO_SIGNUP: true
+
+    healthcheck:
+      start_period: 45s
+      start_interval: 5s
+
+    volumes:
+      - "{{ app_root }}/paperless/data:/usr/src/paperless/data"
+      - "{{ app_root }}/paperless/media:/usr/src/paperless/media"
+      # - "{{ app_root }}/paperless/scripts:/opt/paperless/scripts"
+      # - ./export:/usr/src/paperless/export
+      # - ./consume:/usr/src/paperless/consume
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.paper.rule: Host(`paper.{{ quinary_domain }}`)
+      traefik.http.routers.paper.tls.certresolver: default
+      traefik.http.services.paper.loadbalancer.server.port: 8000
+      # traefik.http.routers.paper.middlewares: authelia
+      homepage.group: Apps
+      homepage.name: Papers and documents
+      homepage.icon: paperless-ngx.png
+      homepage.href: https://paper.{{ quinary_domain }}/
+      homepage.weight: 15
+      homepage.description: Paperless
+      # homepage.siteMonitor: http://paperless:8000
+      # homepage.widget.type: paperlessngx
+      # homepage.widget.url: https://paper.{{ quinary_domain }}
+      # homepage.widget.key: ${PAPERLESS_API_KEY}
+
+  paperless_redis:
+    container_name: paperless_redis
+    image: docker.io/library/redis:7
+    user: 4007:4007
+    restart: unless-stopped
+
+    healthcheck:
+      start_period: 30s
+      start_interval: 5s
+
+    networks:
+      paperless:
+
+    volumes:
+      - "{{ app_root }}/paperless/redis:/data"
+
+  paperless_gotenberg:
+    container_name: paperless_gotenberg
+    image: docker.io/gotenberg/gotenberg:7.10
+    user: 4007:4007
+    restart: unless-stopped
+    command:
+      - "gotenberg"
+      - "--chromium-disable-javascript=true"
+      - "--chromium-allow-list=file:///tmp/.*"
+
+    networks:
+      paperless:
+
+
+  paperless_tika:
+    container_name: paperless_tika
+    image: docker.io/apache/tika:latest
+    user: 4007:4007
+    restart: unless-stopped
+
+    networks:
+      paperless:

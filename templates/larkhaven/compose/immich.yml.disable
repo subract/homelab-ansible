@@ -1,0 +1,100 @@
+networks:
+  immich:
+  web:
+  web_ext:
+
+services:
+  immich_server:
+    container_name: immich_server
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+
+    # Quicksync
+    devices:
+      - /dev/dri:/dev/dri
+
+    volumes:
+      - "{{ app_root }}/immich/data:/data"
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - immich.env
+    depends_on:
+      - immich_redis
+      - immich_postgres
+    networks:
+      immich:
+      web:
+      web_ext:
+    restart: unless-stopped
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.photos.rule: Host(`photos.{{ quinary_domain }}`)
+      traefik.http.routers.photos.tls.certresolver: default
+      traefik.http.services.photos.loadbalancer.server.port: 2283
+      homepage.group: Apps
+      homepage.name: Photo management
+      homepage.icon: immich.png
+      homepage.href: https://photos.{{ quinary_domain }}/
+      homepage.weight: 10
+      homepage.description: Immich
+      homepage.siteMonitor: http://immich_server:2283
+      homepage.widget.type: immich
+      homepage.widget.url: http://immich_server:2283
+      homepage.widget.key: ${IMMICH_API_KEY}
+      homepage.widget.fields: '["photos", "videos"]'
+
+
+  # See discussion to set up transcoding in N150:
+  # https://github.com/immich-app/immich/discussions/21353
+  immich_machine_learning:
+    container_name: immich-machine-learning
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    env_file:
+      - immich.env
+    networks:
+      immich:
+    restart: unless-stopped
+
+    environment:
+      TRANSFORMERS_CACHE: /cache
+      DEVICE: openvino
+      OPENVINO_DEVICE: GPU
+      OPENVINO_CACHE_DIR: /cache/openvino
+    devices:
+      - /dev/dri:/dev/dri
+    device_cgroup_rules:
+      - "c 189:* rmw"
+    group_add:
+      - "128"
+    volumes:
+      - "{{ app_root }}/immich/ml_cache:/cache"
+      - /dev/dri:/dev/dri
+      - /sys/class/drm:/sys/class/drm:ro
+      - /sys/dev/char:/sys/dev/char:ro
+
+
+
+  immich_redis:
+    container_name: immich_redis
+    image: docker.io/valkey/valkey:9@sha256:3b55fbaa0cd93cf0d9d961f405e4dfcc70efe325e2d84da207a0a8e6d8fde4f9
+    restart: unless-stopped
+    healthcheck:
+      test: redis-cli ping || exit 1
+
+    networks:
+      immich:
+
+  immich_postgres:
+    container_name: immich_postgres
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.3.0-pgvectors0.2.0
+    restart: unless-stopped
+    shm_size: 128mb
+
+    env_file:
+      - immich.env
+    environment:
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+    networks:
+      immich:
+    volumes:
+      - "{{ app_root }}/immich/db:/var/lib/postgresql/data"

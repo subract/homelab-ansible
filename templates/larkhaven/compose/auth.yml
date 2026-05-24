@@ -1,0 +1,101 @@
+networks:
+  web:
+  authelia:
+
+services:
+  lldap:
+    container_name: lldap
+    image: lldap/lldap:stable
+    restart: unless-stopped
+
+    networks:
+      web:
+      authelia:
+
+    env_file: auth.env
+    environment:
+      TZ: {{ timezone }}
+
+    volumes:
+      - "{{ app_root }}/lldap:/data"
+
+    healthcheck:
+      interval: 60s
+      start_period: 10s
+      start_interval: 1s
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.ldap.rule: Host(`ldap.{{ quinary_domain }}`)
+      traefik.http.routers.ldap.tls.certresolver: default
+      traefik.http.services.ldap.loadbalancer.server.port: 17170
+      homepage.group: Admin
+      homepage.name: User management
+      homepage.icon: mdi-account-supervisor
+      homepage.href: https://ldap.{{ quinary_domain }}/
+      homepage.description: lldap
+      homepage.siteMonitor: http://lldap:17170
+      homepage.weight: 20
+
+  authelia:
+    container_name: authelia
+    image: ghcr.io/authelia/authelia:latest
+    restart: unless-stopped
+
+    depends_on:
+      - lldap
+
+    networks:
+      web:
+      authelia:
+
+    environment:
+      AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /secrets/jwt_secret
+      AUTHELIA_SESSION_SECRET_FILE: /secrets/session_secret
+      AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /secrets/storage_key
+      AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE: /secrets/smtp_pass
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE: /secrets/ldap_pass
+      AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE: /secrets/oidc_hmac_secret
+
+    volumes:
+      - "{{ app_root }}/authelia/config:/config"
+      - "{{ app_root }}/authelia/secrets:/secrets"
+
+    healthcheck:
+      interval: 60s
+      start_period: 10s
+      start_interval: 1s
+
+    labels:
+      traefik.enable: true
+      traefik.docker.network: doc_web
+      traefik.http.routers.auth.rule: Host(`auth.{{ quinary_domain }}`)
+      traefik.http.routers.auth.observability.accessLogs: true
+      traefik.http.routers.auth.tls.certresolver: default
+      traefik.http.services.auth.loadbalancer.server.port: 9091
+      traefik.http.middlewares.authelia.forwardAuth.address: http://authelia:9091/api/verify?rd=https%3A%2F%2Fauth.{{ quinary_domain }}%2F
+      traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader: true
+      traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders: Remote-User,Remote-Groups,Remote-Name,Remote-Email
+      # traefik.http.middlewares.authelia-basic.forwardAuth.address: http://authelia:9091/api/verify?auth=basic
+      # traefik.http.middlewares.authelia-basic.forwardAuth.trustForwardHeader: true
+      # traefik.http.middlewares.authelia-basic.forwardAuth.authResponseHeaders: Remote-User,Remote-Groups,Remote-Name,Remote-Email
+      homepage.group: Admin
+      homepage.name: Authentication
+      homepage.icon: authelia.png
+      homepage.href: https://auth.{{ quinary_domain }}/
+      homepage.description: Authelia
+      homepage.siteMonitor: http://authelia:9091
+      homepage.weight: 15
+
+  authelia_redis:
+    container_name: authelia_redis
+    image: redis:alpine
+    restart: unless-stopped
+
+    networks:
+      authelia:
+
+    volumes:
+      - "{{ app_root }}/authelia/redis:/data"
+    environment:
+      TZ: {{ timezone }}

@@ -4,6 +4,7 @@ all:
     # offsite01:
     # offsite02:
     larkhaven:
+      timezone: America/Denver
       wifi_interface: wlp2s0
       remote_backup_host: cepheus
       remote_backup_src_filesystem: ssd

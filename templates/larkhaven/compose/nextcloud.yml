@@ -1,0 +1,115 @@
+networks:
+  web:
+  nextcloud:
+
+services:
+  nextcloud:
+    container_name: nextcloud
+    image: linuxserver/nextcloud:33.0.3
+    restart: unless-stopped
+
+    volumes:
+      - "{{ app_root }}/nextcloud/config:/config"
+      - "{{ app_root }}/nextcloud/data:/data"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+    networks:
+      web:
+      nextcloud:
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.cloud.rule: Host(`cloud.{{ quinary_domain }}`)
+      traefik.http.routers.cloud.tls.certresolver: default
+      traefik.serversTransport.forwardingTimeouts.dialTimeout: 0s
+      traefik.http.services.cloud.loadbalancer.server.port: 80
+      homepage.group: Apps
+      homepage.name: Files and stuff
+      homepage.icon: nextcloud.png
+      homepage.href: https://cloud.{{ quinary_domain }}/
+      homepage.weight: 20
+      homepage.description: Nextcloud
+      # homepage.siteMonitor: http://nextcloud
+      # homepage.widget.type: nextcloud
+      # homepage.widget.fields: '["freespace", "numfiles"]'
+      # homepage.widget.url: https://cloud.{{ quinary_domain }}
+      # homepage.widget.key: ${NEXTCLOUD_API_KEY}
+
+
+  nextcloud_db:
+    container_name: nextcloud_db
+    image: postgres:18
+    restart: unless-stopped
+
+    networks:
+      nextcloud:
+
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      TZ: {{ timezone }}
+    env_file:
+      - nextcloud.env
+    volumes:
+      - "{{ app_root }}/nextcloud/db:/var/lib/postgresql"
+
+  nextcloud_redis:
+    container_name: nextcloud_redis
+    image: redis:8-alpine
+    restart: unless-stopped
+    networks:
+      nextcloud:
+    environment:
+      TZ: {{ timezone }}
+    volumes:
+      - "{{ app_root }}/nextcloud/redis:/data"
+
+  collabora:
+    container_name: collabora
+    image: collabora/code:25.04.9.4.1
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    cap_add:
+      - MKNOD
+      - SYS_CHROOT
+      - SYS_ADMIN
+      - FOWNER
+      - CHOWN
+
+    environment:
+      aliasgroup1: "https://cloud.{{ quinary_domain }}:443"
+      extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
+
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+    networks:
+      web:
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.office.rule: Host(`office.{{ quinary_domain }}`)
+      traefik.http.routers.office.tls.certresolver: default
+      traefik.http.services.office.loadbalancer.server.port: 9980
+
+  # nextcloud_transcoder:
+  #   image: radialapps/go-vod
+  #   container_name: nextcloud_transcoder
+  #   restart: unless-stopped
+  #   init: true
+  #   depends_on:
+  #     - nextcloud
+  #   environment:
+  #     - NEXTCLOUD_HOST=https://cloud.{{ quinary_domain }}
+  #     # - NVIDIA_VISIBLE_DEVICES=all
+
+  #   networks:
+  #     nextcloud:
+
+  #   devices:
+  #     - /dev/dri:/dev/dri
+  #   volumes:
+  #     - "{{ app_root }}/nextcloud/data:/data:ro"

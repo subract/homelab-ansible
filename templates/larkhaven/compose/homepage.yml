@@ -1,0 +1,33 @@
+networks:
+  web:
+  docker-socket:
+
+services:
+  homepage:
+    container_name: homepage
+    image: ghcr.io/gethomepage/homepage:latest
+    restart: unless-stopped
+
+    networks:
+      web:
+      docker-socket:
+
+    environment:
+      LOG_LEVEL: warning
+      HOMEPAGE_ALLOWED_HOSTS: "start.{{ quinary_domain }}"
+
+    volumes:
+      - "{{ app_root }}/homepage/config:/app/config"
+      - "{{ app_root }}/homepage/icons:/app/public/icons"
+      - "{{ app_root }}/homepage/images:/app/public/images"
+
+    healthcheck:
+      start_period: 30s
+      start_interval: 5s
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.homepage.rule: Host(`start.{{ quinary_domain }}`)
+      traefik.http.routers.homepage.tls.certresolver: default
+      traefik.http.services.homepage.loadbalancer.server.port: 3000
+      # traefik.http.routers.homepage.middlewares: authelia

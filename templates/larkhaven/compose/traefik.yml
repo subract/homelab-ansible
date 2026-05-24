@@ -1,5 +1,14 @@
 networks:
   web:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/23
+          # Smaller than subnet size, so we can guarantee that there are addresses
+          # outside of the "DHCP range" for containers that need fixed addresses
+          # (just Traefik)
+          ip_range: 172.18.0.0/24
+          gateway: 172.18.0.1
   docker-socket:
 
 services:
@@ -7,6 +16,12 @@ services:
     container_name: docker-socket-proxy
     image: ghcr.io/tecnativa/docker-socket-proxy:v0.4.2
     restart: unless-stopped
+    healthcheck:
+      test: wget --spider --tries=1 http://localhost:2375/_ping || exit 1
+      interval: "29s"
+      timeout: "5s"
+      retries: 3
+      start_period: "21s"
 
     environment:
       CONTAINERS: 1
@@ -24,10 +39,11 @@ services:
   traefik:
     container_name: traefik
     image: traefik:3.6
-    restart: on-failure:3
+    restart: unless-stopped
 
     depends_on:
-      - docker-socket-proxy
+      docker-socket-proxy:
+        condition: service_healthy
 
     ports:
       - 80:80
@@ -37,8 +53,13 @@ services:
       - traefik.env
 
     networks:
-      - web
-      - docker-socket
+      web:
+        # Some apps need to be able to depend on the IP of the trusted proxies
+        # e.g. Nextcloud, which will refuse to look up a host via DNS
+        # This IP is inside the subnet, but outside the ip_range to avoid
+        # conflicts.
+        ipv4_address: 172.18.1.1
+      docker-socket:
 
     volumes:
       - "{{ app_root }}/traefik/traefik.yml:/traefik.yml"
@@ -56,3 +77,27 @@ services:
       traefik.http.middlewares.auth.basicauth.users: ${TRAEFIK_USERS}
       # Below will cause Traefik to request a wildcard cert
       traefik.http.routers.api.tls.domains[0].main: "*.{{ quinary_domain }}"
+      traefik.http.routers.api.tls.domains[0].sans: "{{ quinary_domain }}"
+
+  landing_page:
+    container_name: landing_page
+    image: nginx:alpine
+    networks:
+      web:
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    volumes:
+      - "{{ app_root }}/landing_page/:/usr/share/nginx/html:ro"
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.landing_page.rule: Host(`{{ quinary_domain }}`)
+      traefik.http.routers.landing_page.tls.certresolver: default
+      traefik.http.services.landing_page.loadbalancer.server.port: 80
+      homepage.group: Admin
+      homepage.name: Landing page
+      homepage.icon: sh-airsonic
+      homepage.href: https://{{ quinary_domain }}/
+      homepage.siteMonitor: http://landing_page:80
+      homepage.weight: 25
