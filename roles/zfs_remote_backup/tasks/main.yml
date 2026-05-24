@@ -1,16 +1,47 @@
 ---
-- name: Install sanoid and syncoid
-  tags: pkg, syncoid, sanoid
-  package:
-    name:
-      - sanoid
+- name: Deploy systemd unit for ZFS remote backup
+  tags: backup
+  template:
+    src: zfs-remote-backup.service.j2
+    dest: /etc/systemd/system/zfs-remote-backup.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
 
-- name: Add remote backup cron job
-  tags: config, syncoid
-  ansible.builtin.cron:
-    name: Sync {{ remote_backup_src_filesystem }} to {{ remote_backup_host }}
-    minute: "0"
-    hour: "4"
-    job: >
-      /usr/sbin/syncoid -r --no-sync-snap --no-privilege-elevation --sshkey /root/.ssh/id_ed25519 {{ remote_backup_src_filesystem }}
-      {{ remote_backup_user }}@{{ remote_backup_host }}:{{ remote_backup_dst_filesystem }}
+- name: Deploy backup script
+  tags: backup
+  template:
+    src: zfs-remote-backup.sh
+    dest: /usr/local/bin/zfs-remote-backup.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy systemd timer for ZFS remote backup
+  tags: backup
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/zfs-remote-backup.timer
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Unit]
+      Description=Daily ZFS remote backup at 2 AM
+
+      [Timer]
+      OnCalendar=*-*-* 02:00:00
+      Persistent=true
+      Unit=zfs-remote-backup.service
+
+      [Install]
+      WantedBy=timers.target
+  notify: Reload systemd
+
+- name: Enable and start ZFS remote backup timer
+  tags: backup
+  ansible.builtin.systemd:
+    name: zfs-remote-backup.timer
+    enabled: true
+    state: started
+    daemon_reload: true
