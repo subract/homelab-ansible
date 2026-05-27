@@ -1,0 +1,25 @@
+networks:
+  web:
+
+services:
+  iperf3:
+    container_name: iperf3
+    image: networkstatic/iperf3:latest
+    restart: unless-stopped
+    user: 4023:4023
+    command: -s
+
+    networks:
+      web:
+
+    ports:
+      - 5201:5201
+      - 5201:5201/udp
+
+    labels:
+      traefik.enable: false
+      homepage.group: Admin
+      homepage.name: Speed test
+      homepage.icon: iperf3.png
+      homepage.weight: 17
+      homepage.description: iperf3

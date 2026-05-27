@@ -1,0 +1,36 @@
+networks:
+  web:
+
+services:
+  frigate:
+    container_name: frigate
+    image: ghcr.io/blakeblackshear/frigate:stable
+    restart: 'unless-stopped'
+    stop_grace_period: 30s
+    privileged: true
+    shm_size: '256mb'
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "{{ app_root }}/frigate/config:/config"
+      - "{{ app_root }}/frigate/media:/media/frigate"
+      - type: tmpfs
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+    environment:
+      TZ: "{{ timezone }}"
+      FRIGATE_RTSP_PASSWORD: "changeme"
+    networks:
+      - web
+    labels:
+      traefik.enable: true
+      traefik.http.routers.cameras.rule: Host(`cameras.{{ quinary_domain }}`)
+      traefik.http.routers.cameras.tls.certresolver: default
+      traefik.http.services.cameras.loadbalancer.server.port: 5000
+      homepage.group: Admin
+      homepage.name: Cameras
+      homepage.icon: frigate.png
+      homepage.href: https://cameras.{{ quinary_domain }}
+      homepage.description: Frigate
