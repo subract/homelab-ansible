@@ -1,0 +1,40 @@
+networks:
+  web:
+
+services:
+  asterisk:
+    container_name: asterisk
+    image: andrius/asterisk:latest
+    restart: unless-stopped
+
+    networks:
+      web:
+
+    environment:
+      TZ: {{ timezone }}
+      ASTERISK_UID: 4023
+      ASTERISK_GID: 4023
+
+    volumes:
+      - "{{ app_root }}/voip/asterisk/config:/etc/asterisk"
+      - "{{ app_root }}/voip/asterisk/data:/var/lib/asterisk"
+      - "{{ app_root }}/voip/asterisk/log:/var/log/asterisk"
+      - "{{ app_root }}/voip/asterisk/spool:/var/spool/asterisk"
+
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "10000-10100:10000-10100/udp"
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.asterisk.rule: Host(`asterisk.{{ tertiary_domain }}`)
+      traefik.http.routers.asterisk.tls.certresolver: default
+      traefik.http.services.asterisk.loadbalancer.server.port: 8088
+      homepage.group: Apps
+      homepage.name: Asterisk
+      homepage.icon: asterisk.png
+      homepage.href: https://asterisk.{{ tertiary_domain }}/
+      homepage.weight: 20
+      homepage.description: VoIP PBX
+      homepage.siteMonitor: http://asterisk:8088

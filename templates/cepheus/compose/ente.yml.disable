@@ -1,0 +1,74 @@
+networks:
+  web_ext:
+  ente:
+
+services:
+  ente_api:
+    image: ghcr.io/ente-io/server
+    container_name: ente_api
+    restart: unless-stopped
+    # ports:
+      # - 8080:8080 # API
+    depends_on:
+      ente_db:
+        condition: service_healthy
+
+    networks:
+      web_ext:
+      ente:
+
+    volumes:
+      - "/app/ente/config/museum.yaml:/museum.yaml:ro"
+      - "/app/ente/data:/data:ro"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/ping"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+
+  # Resolve "localhost:3200" in the museum container to the minio container.
+  # socat:
+  #   image: alpine/socat
+  #   network_mode: service:museum
+  #   depends_on: [museum]
+  #   command: "TCP-LISTEN:3200,fork,reuseaddr TCP:minio:3200"
+
+  ente_web:
+    image: ghcr.io/ente-io/web
+    container_name: ente_web
+    restart: unless-stopped
+    # Uncomment what you need to tweak.
+    # ports:
+      # - 3000:3000 # Photos web app
+      # - 3001:3001 # Accounts
+      # - 3002:3002 # Public albums
+      # - 3003:3003 # Auth
+      # - 3004:3004 # Cast
+      # - 3005:3005 # Share
+      # - 3006:3006 # Embed
+    # Modify these values to your custom subdomains, if using any
+    networks:
+      web_ext:
+    environment:
+      ENTE_API_ORIGIN: "https://api.ente.{{ tertiary_domain }}"
+      ENTE_ALBUMS_ORIGIN: "https://albums.ente.{{ tertiary_domain }}"
+      ENTE_PHOTOS_ORIGIN: "https://ente.{{ tertiary_domain }}"
+
+  ente_db:
+    image: postgres:15
+    container_name: ente_db
+    restart: unless-stopped
+
+    networks:
+      ente:
+
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_DB: ente_db
+    healthcheck:
+      test: pg_isready -q -d ente_db -U pguser
+      start_period: 40s
+      start_interval: 1s
+    volumes:
+      - "/app/ente/db:/var/lib/postgresql/data"

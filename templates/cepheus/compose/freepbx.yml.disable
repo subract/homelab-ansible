@@ -1,0 +1,42 @@
+networks:
+  web:
+
+services:
+  freepbx:
+    container_name: freepbx
+    image: tiredofit/freepbx:latest
+    restart: unless-stopped
+
+    networks:
+      web:
+
+    environment:
+      TIMEZONE: "{{ timezone }}"
+      RTP_START: 18000
+      RTP_FINISH: 18100
+      ENABLE_FAIL2BAN: false
+      DB_EMBEDDED: true
+
+    volumes:
+      - "{{ app_root }}/freepbx/data:/data"
+      - "{{ app_root }}/freepbx/logs:/var/log"
+      # - "{{ app_root }}/freepbx/certs:/certs"
+
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "5160:5160/udp"
+      - "18000-18100:18000-18100/udp"
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.dial.rule: Host(`dial.{{ tertiary_domain }}`)
+      traefik.http.routers.dial.tls.certresolver: default
+      traefik.http.services.dial.loadbalancer.server.port: 80
+      homepage.group: Apps
+      homepage.name: FreePBX
+      homepage.icon: freepbx.png
+      homepage.href: https://freepbx.{{ tertiary_domain }}/
+      homepage.weight: 20
+      homepage.description: VoIP PBX
+      homepage.siteMonitor: http://freepbx:80
