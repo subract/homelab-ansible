@@ -73,6 +73,14 @@
       with_fileglob:
         - ../templates/{{ inventory_hostname }}/compose/*.yml
 
+    - name: Remove compose files disabled locally
+      tags: docker, compose
+      file:
+        path: "{{ compose_dir }}/{{ item | basename | regex_replace('\\.disable$', '') }}"
+        state: absent
+      with_fileglob:
+        - ../templates/{{ inventory_hostname }}/compose/*.yml.disable
+
     - name: Copy all .env files
       tags: docker, compose, env
       copy:
