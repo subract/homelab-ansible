@@ -1,0 +1,9 @@
+- name: Drop modprobe config for iwlwifi
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/iwlwifi.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      options iwlwifi power_save=0
+      options iwlmvm power_scheme=1
