@@ -39,7 +39,7 @@ services:
     container_name: traefik
     image: traefik:latest
     user: 4001:4001
-    restart: on-failure:3
+    restart: unless-stopped
 
     depends_on:
       docker-socket-proxy:
