@@ -1,6 +1,6 @@
 services:
   pangolin:
-    image: fosrl/pangolin:latest
+    image: fosrl/pangolin:ee-latest
     container_name: pangolin
     restart: unless-stopped
     volumes:
@@ -37,9 +37,11 @@ services:
       - 51820:51820/udp
       - "{{ public_ip }}:443:443"
       - "{{ public_ip }}:80:80"
-      - "{{ public_ip }}:28361:28361"
+      # Minecraft
       - "{{ public_ip }}:25569:25569"
-      - "{{ public_ip }}:42420:42420"
+      # Factorio
+      - "{{ public_ip }}:34197:34197/udp"
+      - "{{ public_ip }}:27015:27015/tcp"
     networks:
       - pangolin
       - docker-socket
@@ -47,7 +49,7 @@ services:
       use_traefik_instance: fossorial
 
   traefik:
-    image: traefik:v3.4
+    image: traefik:v3.6
     container_name: traefik
     restart: unless-stopped
     network_mode: service:gerbil
