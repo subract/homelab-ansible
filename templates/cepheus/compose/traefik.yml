@@ -75,7 +75,8 @@ services:
       traefik.http.routers.api.middlewares: auth
       traefik.http.middlewares.auth.basicauth.users: ${TRAEFIK_USERS}
       # Below will cause Traefik to request a wildcard cert
-      traefik.http.routers.api.tls.domains[0].main: "*.{{ tertiary_domain }}"
+      traefik.http.routers.api.tls.domains[0].main: "{{ tertiary_domain }}"
+      traefik.http.routers.api.tls.domains[0].sans: "*.{{ tertiary_domain }}"
       homepage.group: Admin
       homepage.name: Reverse proxy
       homepage.icon: traefik.png
