@@ -98,3 +98,26 @@ services:
     volumes:
       - "{{ app_root }}/immich/postgres:/var/lib/postgresql/data"
     restart: unless-stopped
+
+  immich_public_proxy:
+    image: alangrainger/immich-public-proxy:latest
+    container_name: immich_public_proxy
+    restart: unless-stopped
+
+    networks:
+      web:
+      web_ext:
+
+    environment:
+      IMMICH_URL: http://immich_server:2283
+    healthcheck:
+      test: wget -q --spider http://localhost:3000/share/healthcheck || exit 1
+      start_period: 10s
+      timeout: 5s
+
+    labels:
+      traefik.enable: false
+      # traefik.http.routers.immich_profxy.rule: Host(`share.{{ tertiary_domain }}`)
+      # traefik.http.routers.immich_proxy.entrypoints: https
+      # traefik.http.routers.immich_proxy.tls.certresolver: default
+      # traefik.http.services.immich_proxy.loadbalancer.server.port: 3000
