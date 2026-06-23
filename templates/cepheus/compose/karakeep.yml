@@ -23,6 +23,7 @@ services:
       - karakeep.env
 
     environment:
+      LOG_LEVEL: notice
       NEXTAUTH_URL: https://bookmarks.{{ tertiary_domain }}
       MEILI_ADDR: http://karakeep_meilisearch:7700
       BROWSER_WEB_URL: http://karakeep_chrome:9222
@@ -31,8 +32,8 @@ services:
 
       OPENAI_BASE_URL: https://openrouter.ai/api/v1
       OPENAI_API_KEY: "{{ openrouter_api_key }}"
-      INFERENCE_TEXT_MODEL: google/gemini-2.0-flash-001
-      INFERENCE_IMAGE_MODEL: google/gemini-2.0-flash-001
+      INFERENCE_TEXT_MODEL: google/gemini-3.5-flash
+      INFERENCE_IMAGE_MODEL: google/gemini-3.5-flash
       EMBEDDING_TEXT_MODEL: nomic-embed-text
       INFERENCE_CONTEXT_LENGTH: 131072
 
