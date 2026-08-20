@@ -1,0 +1,176 @@
+networks:
+  web:
+  dawarich:
+
+services:
+  dawarich_app:
+    container_name: dawarich_app
+    image: freikin/dawarich:latest
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    entrypoint: web-entrypoint.sh
+    command: ['bin/rails', 'server', '-p', '3000', '-b', '::']
+    env_file:
+      - dawarich.env
+
+    depends_on:
+      dawarich_db:
+        condition: service_healthy
+        restart: true
+      dawarich_redis:
+        condition: service_healthy
+        restart: true
+
+    volumes:
+      - "{{ app_root }}/dawarich/public:/var/app/public"
+      - "{{ app_root }}/dawarich/watched:/var/app/tmp/imports/watched"
+      - "{{ app_root }}/dawarich/storage:/var/app/storage"
+      - "{{ app_root }}/dawarich/db:/dawarich_db_data"
+
+    networks:
+      web:
+      dawarich:
+
+    environment:
+      RAILS_ENV: production
+      REDIS_URL: redis://dawarich_redis:6379
+      DATABASE_HOST: dawarich_db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_NAME: dawarich_production
+      APPLICATION_HOSTS: "places.{{ tertiary_domain }},localhost,::1,127.0.0.1"
+      TIME_ZONE: "{{ timezone }}"
+      APPLICATION_PROTOCOL: http
+      PROMETHEUS_EXPORTER_ENABLED: false
+      RAILS_LOG_TO_STDOUT: true
+      SELF_HOSTED: true
+      STORE_GEODATA: true
+      WEB_CONCURRENCY: 1
+
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO - http://127.0.0.1:3000/api/v1/health | grep -q '\"status\"\\s*:\\s*\"ok\"'" ]
+      interval: 10s
+      retries: 30
+      start_period: 30s
+      timeout: 10s
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.places.rule: Host(`places.{{ tertiary_domain }}`)
+      traefik.http.routers.places.tls.certresolver: default
+      traefik.http.services.places.loadbalancer.server.port: 3000
+      homepage.group: Apps
+      homepage.name: Location history
+      homepage.icon: dawarich.png
+      homepage.href: https://places.{{ tertiary_domain }}/
+      homepage.weight: 21
+      homepage.description: Dawarich
+      homepage.siteMonitor: http://dawarich_app:3000
+
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 4G
+
+  dawarich_sidekiq:
+    container_name: dawarich_sidekiq
+    image: freikin/dawarich:latest
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    entrypoint: sidekiq-entrypoint.sh
+    command: ['sidekiq']
+    env_file:
+      - dawarich.env
+
+    depends_on:
+      dawarich_db:
+        condition: service_healthy
+        restart: true
+      dawarich_redis:
+        condition: service_healthy
+        restart: true
+      dawarich_app:
+        condition: service_healthy
+        restart: true
+
+    volumes:
+      - "{{ app_root }}/dawarich/public:/var/app/public"
+      - "{{ app_root }}/dawarich/watched:/var/app/tmp/imports/watched"
+      - "{{ app_root }}/dawarich/storage:/var/app/storage"
+
+    networks:
+      dawarich:
+
+    environment:
+      RAILS_ENV: production
+      REDIS_URL: redis://dawarich_redis:6379
+      DATABASE_HOST: dawarich_db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_NAME: dawarich_production
+      APPLICATION_HOSTS: "places.{{ tertiary_domain }},localhost,::1,127.0.0.1"
+      APPLICATION_PROTOCOL: http
+      BACKGROUND_PROCESSING_CONCURRENCY: 3
+      PROMETHEUS_EXPORTER_ENABLED: false
+      RAILS_LOG_TO_STDOUT: true
+      SELF_HOSTED: true
+      STORE_GEODATA: true
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pgrep -f sidekiq" ]
+      interval: 10s
+      retries: 30
+      start_period: 30s
+      timeout: 10s
+
+  dawarich_db:
+    container_name: dawarich_db
+    image: postgis/postgis:17-3.5-alpine
+    restart: unless-stopped
+    shm_size: 1G
+    env_file:
+      - dawarich.env
+
+    volumes:
+      - "{{ app_root }}/dawarich/db:/var/lib/postgresql/data"
+      - "{{ app_root }}/dawarich/shared:/var/shared"
+
+    networks:
+      dawarich:
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: dawarich_production
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d dawarich_production" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  dawarich_redis:
+    container_name: dawarich_redis
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: >
+      redis-server
+      --save 900 1
+      --save 300 10
+      --appendonly no
+
+    volumes:
+      - "{{ app_root }}/dawarich/shared:/data"
+
+    networks:
+      dawarich:
+
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
