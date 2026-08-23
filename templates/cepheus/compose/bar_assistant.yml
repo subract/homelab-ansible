@@ -5,7 +5,7 @@ networks:
 services:
   ba_meilisearch:
     container_name: ba_meilisearch
-    image: getmeili/meilisearch:v1.9 # Never use latest tag
+    image: getmeili/meilisearch:v1.50 # Never use latest tag
     user: 33:33
     networks:
       bar_assistant:
@@ -32,7 +32,7 @@ services:
 
   bar_assistant:
     container_name: bar_assistant
-    image: barassistant/server:v5
+    image: barassistant/server:v6
     # Incompatible with running as specified user, only uses 33
     networks:
       bar_assistant:
@@ -54,7 +54,7 @@ services:
 
   salt_rim:
     container_name: salt_rim
-    image: barassistant/salt-rim:v4
+    image: barassistant/salt-rim:v5
     # Incompatible with running as specified user
     networks:
       bar_assistant:
