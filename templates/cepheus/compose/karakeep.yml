@@ -37,8 +37,8 @@ services:
       EMBEDDING_TEXT_MODEL: nomic-embed-text
       INFERENCE_CONTEXT_LENGTH: 131072
 
-      # DISABLE_PASSWORD_AUTH: true
-      OAUTH_WELLKNOWN_URL: https://auth.{{ tertiary_domain }}
+      DISABLE_PASSWORD_AUTH: true
+      OAUTH_WELLKNOWN_URL: https://auth.{{ tertiary_domain }}/.well-known/openid-configuration
       OAUTH_PROVIDER_NAME: auth.{{ tertiary_domain }}
       # Allowing signin to existing accounts with SSO
       OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING: true
