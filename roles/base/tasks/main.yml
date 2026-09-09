@@ -43,7 +43,6 @@
     - { src: zshrc, dest: /etc/zsh/zshrc }
     - { src: zshrc-skel, dest: /etc/skel/.zshrc }
     - { src: zshrc-skel, dest: /etc/zsh/newuser.zshrc.recommended }
-    - { src: zshrc-skel, dest: "/home/{{ user }}/.zshrc" }
 
 - name: Set shells to zsh
   tags: zsh, config

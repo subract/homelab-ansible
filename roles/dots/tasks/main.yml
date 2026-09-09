@@ -30,7 +30,6 @@
 - name: Store GitHub dotfiles PAT
   tags: dots
   become: true
-  become_user: "{{ user }}"
   no_log: true
   copy:
     content: "https://subract:{{ github_dotfiles_pat }}@github.com\n"
