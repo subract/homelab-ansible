@@ -86,7 +86,17 @@
               args: []
               path: nvidia-container-runtime
     - docker
-    - dotfiles_copy
+
+- name: the-pub
+  hosts: the-pub
+  become: true
+  gather_facts: true
+  ignore_unreachable: false
+  roles:
+    - zfs_zed
+    - geerlingguy.ntp
+    # - syncoid_sanoid
+    - apprise
 
 - name: cepheus
   hosts: cepheus

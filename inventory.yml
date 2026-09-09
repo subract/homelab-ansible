@@ -2,7 +2,9 @@
 all:
   hosts:
     # offsite01:
-    # offsite02:
+    the-pub:
+      user: subract
+      ansible_host: "the-pub.{{ tertiary_domain }}"
     larkhaven:
       timezone: America/Denver
       wifi_interface: wlp2s0
