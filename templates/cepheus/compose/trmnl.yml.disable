@@ -1,0 +1,170 @@
+networks:
+  web:
+  trmnl:
+
+services:
+  # init-certificates:
+  #   container_name: init-certificates
+  #   image: ghcr.io/usetrmnl/terminus:latest
+  #   user: root
+  #   restart: 'no'
+
+  #   networks:
+  #     trmnl:
+
+  #   env_file: trmnl.env
+  #   environment:
+  #     TZ: {{ timezone }}
+
+  #   volumes:
+  #     - "{{ app_root }}/trmnl/certificates:/etc/ssl/certs"
+  #   entrypoint: ["/bin/bash", "-c"]
+  #   command: scripts/docker/install-certificates
+
+  trmnl_web:
+    container_name: trmnl_web
+    init: true
+    image: ghcr.io/usetrmnl/terminus:latest
+    restart: unless-stopped
+
+    networks:
+      web:
+      trmnl:
+
+    env_file: trmnl.env
+    environment:
+      HANAMI_PORT: 2300
+      API_URI: https://trmnl.{{ tertiary_domain }}
+      APP_SETUP: true
+      TZ: {{ timezone }}
+
+    volumes:
+      - "{{ app_root }}/trmnl/uploads:/app/public/uploads"
+
+    depends_on:
+      # init-certificates:
+      #   condition: service_completed_successfully
+      trmnl_db:
+        condition: service_started
+      trmnl_kv:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:2300/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.trmnl.rule: Host(`trmnl.{{ tertiary_domain }}`)
+      traefik.http.routers.trmnl.tls.certresolver: default
+      traefik.http.services.trmnl.loadbalancer.server.port: 2300
+      homepage.group: Apps
+      homepage.name: TRMNL
+      homepage.icon: trmnl.png
+      homepage.href: https://trmnl.{{ tertiary_domain }}/
+      homepage.weight: 50
+      homepage.description: Terminus
+      homepage.siteMonitor: http://trmnl_web:2300
+
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+
+  trmnl_worker:
+    container_name: trmnl_worker
+    init: true
+    image: ghcr.io/usetrmnl/terminus:latest
+    restart: unless-stopped
+
+    networks:
+      trmnl:
+
+    env_file: trmnl.env
+    environment:
+      HANAMI_PORT: 2300
+      API_URI: https://trmnl.{{ tertiary_domain }}
+      TZ: {{ timezone }}
+
+    volumes:
+      # - "{{ app_root }}/trmnl/certificates:/etc/ssl/certs"
+      - "{{ app_root }}/trmnl/uploads:/app/public/uploads"
+
+    depends_on:
+      trmnl_web:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "sidekiq"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+
+  trmnl_db:
+    container_name: trmnl_db
+    image: postgres:18.4-alpine
+    restart: unless-stopped
+
+    networks:
+      trmnl:
+
+    env_file: trmnl.env
+    environment:
+      TZ: {{ timezone }}
+
+    volumes:
+      - "{{ app_root }}/trmnl/db:/var/lib/postgresql"
+    command: ["postgres", "-p", "5432"]
+
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready --username $$POSTGRES_USER --dbname $$POSTGRES_DB --port 5432"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
+
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: "1.0"
+
+  trmnl_kv:
+    container_name: trmnl_kv
+    image: valkey/valkey:9-alpine
+    restart: unless-stopped
+
+    networks:
+      trmnl:
+
+    env_file: trmnl.env
+    environment:
+      TZ: {{ timezone }}
+
+    volumes:
+      - "{{ app_root }}/trmnl/keyvalue:/data"
+    command: >
+      /bin/sh -c "exec valkey-server --maxmemory 512mb --maxmemory-policy noeviction --port 6379"
+
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -p 6379 ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 2s
+
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
