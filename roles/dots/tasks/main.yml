@@ -1,0 +1,68 @@
+---
+- name: Install packages
+  tags: dots
+  package:
+    name:
+      - git
+      - stow
+
+- name: Set global git identity
+  tags: dots
+  become: true
+  become_user: "{{ user }}"
+  git_config:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    scope: global
+  loop:
+    - { key: user.name, value: "subract" }
+    - { key: user.email, value: "self@subract.dev" }
+
+- name: Use credential store for github.com
+  tags: dots
+  become: true
+  become_user: "{{ user }}"
+  git_config:
+    name: credential.https://github.com.helper
+    value: store
+    scope: global
+
+- name: Store GitHub dotfiles PAT
+  tags: dots
+  become: true
+  become_user: "{{ user }}"
+  no_log: true
+  copy:
+    content: "https://subract:{{ github_dotfiles_pat }}@github.com\n"
+    dest: /home/{{ user }}/.git-credentials
+    mode: "0600"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Clone dotfiles
+  tags: dots
+  become: true
+  become_user: "{{ user }}"
+  git:
+    repo: https://github.com/subract/dotfiles.git
+    dest: /home/{{ user }}/.dotfiles
+  register: dots_clone
+  failed_when: false
+
+- name: Warn if dotfiles clone/pull failed
+  tags: dots
+  when: dots_clone.failed | default(false)
+  debug:
+    msg: >-
+      WARNING: Could not clone/pull dotfiles at /home/{{ user }}/.dotfiles
+      (local changes?). Skipping; continuing playbook.
+      Error: {{ dots_clone.msg | default('unknown') }}
+
+- name: Clone oh-my-zsh
+  tags: dots, zsh
+  become: true
+  become_user: "{{ user }}"
+  git:
+    repo: https://github.com/ohmyzsh/ohmyzsh.git
+    dest: /home/{{ user }}/.oh-my-zsh
+    depth: 1

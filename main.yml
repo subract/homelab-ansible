@@ -57,7 +57,6 @@
       tags: tailscale
       vars:
         tailscale_args: --advertise-tags=tag:offsite --advertise-exit-node
-    - dotfiles_copy
     - geerlingguy.ntp
     - inhibit_suspend
     - apprise
@@ -95,6 +94,7 @@
   gather_facts: true
   ignore_unreachable: false
   roles:
+    - dots
     - more_users
     - geerlingguy.ntp
     - inhibit_suspend
@@ -128,7 +128,6 @@
 #     - arch_workstation
 #     - arch_laptop
 #     - arch_secureboot
-#     - dotfiles_clone
 #     - role: artis3n.tailscale.machine
 #       tags: tailscale
 
