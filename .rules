@@ -10,7 +10,7 @@ I have a number of standards that I use when writing Docker Compose files:
     volumes:
       - "{{ app_root }}/jellyfin/config:/config"
 ```
-- If you need to reference the URL at which a service will be accessible, use <service name>.{{ tertiary_domain }}
+- If you need to reference the URL at which a service will be accessible, use <service name>.{{ primary_domain }}
 - Set the timezone to {{ timezone }}
 - Declare environment variables using `key: value` syntax, not `- key=value`
 - If the project provides env vars to disable telemetry/statistics/etc, include them.
@@ -18,7 +18,7 @@ I have a number of standards that I use when writing Docker Compose files:
 ```
     labels:
       traefik.enable: true
-      traefik.http.routers.media.rule: Host(`media.{{ tertiary_domain }}`)
+      traefik.http.routers.media.rule: Host(`media.{{ primary_domain }}`)
       traefik.http.routers.media.tls.certresolver: default
       traefik.http.services.media.loadbalancer.server.port: 8096
 ```
@@ -52,13 +52,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.habits.rule: Host(`habits.{{ tertiary_domain }}`)
+      traefik.http.routers.habits.rule: Host(`habits.{{ primary_domain }}`)
       traefik.http.routers.habits.tls.certresolver: default
       traefik.http.services.habits.loadbalancer.server.port: 8080
       homepage.group: Apps
       homepage.name: Habit tracking
       homepage.icon: beaverhabits.png
-      homepage.href: https://habits.{{ tertiary_domain }}/
+      homepage.href: https://habits.{{ primary_domain }}/
       homepage.weight: 17
       homepage.description: Beaver Habits
       homepage.siteMonitor: http://beaverhabits:8945

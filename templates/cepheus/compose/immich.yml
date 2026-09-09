@@ -30,13 +30,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.pic.rule: Host(`pic.{{ tertiary_domain }}`)
+      traefik.http.routers.pic.rule: Host(`pic.{{ primary_domain }}`)
       traefik.http.routers.pic.tls.certresolver: default
       traefik.http.services.pic.loadbalancer.server.port: 2283
       homepage.group: Apps
       homepage.name: Photo management
       homepage.icon: immich.png
-      homepage.href: https://pic.{{ tertiary_domain }}/
+      homepage.href: https://pic.{{ primary_domain }}/
       homepage.weight: 10
       homepage.description: Immich
       homepage.siteMonitor: http://immich_server:2283
@@ -117,7 +117,7 @@ services:
 
     labels:
       traefik.enable: false
-      # traefik.http.routers.immich_profxy.rule: Host(`share.{{ tertiary_domain }}`)
+      # traefik.http.routers.immich_profxy.rule: Host(`share.{{ primary_domain }}`)
       # traefik.http.routers.immich_proxy.entrypoints: https
       # traefik.http.routers.immich_proxy.tls.certresolver: default
       # traefik.http.services.immich_proxy.loadbalancer.server.port: 3000

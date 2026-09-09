@@ -34,7 +34,7 @@ services:
     env_file: trmnl.env
     environment:
       HANAMI_PORT: 2300
-      API_URI: https://trmnl.{{ tertiary_domain }}
+      API_URI: https://trmnl.{{ primary_domain }}
       APP_SETUP: true
       TZ: {{ timezone }}
 
@@ -58,13 +58,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.trmnl.rule: Host(`trmnl.{{ tertiary_domain }}`)
+      traefik.http.routers.trmnl.rule: Host(`trmnl.{{ primary_domain }}`)
       traefik.http.routers.trmnl.tls.certresolver: default
       traefik.http.services.trmnl.loadbalancer.server.port: 2300
       homepage.group: Apps
       homepage.name: TRMNL
       homepage.icon: trmnl.png
-      homepage.href: https://trmnl.{{ tertiary_domain }}/
+      homepage.href: https://trmnl.{{ primary_domain }}/
       homepage.weight: 50
       homepage.description: Terminus
       homepage.siteMonitor: http://trmnl_web:2300
@@ -87,7 +87,7 @@ services:
     env_file: trmnl.env
     environment:
       HANAMI_PORT: 2300
-      API_URI: https://trmnl.{{ tertiary_domain }}
+      API_URI: https://trmnl.{{ primary_domain }}
       TZ: {{ timezone }}
 
     volumes:

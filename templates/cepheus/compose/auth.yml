@@ -25,13 +25,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.ldap.rule: Host(`ldap.{{ tertiary_domain }}`)
+      traefik.http.routers.ldap.rule: Host(`ldap.{{ primary_domain }}`)
       traefik.http.routers.ldap.tls.certresolver: default
       traefik.http.services.ldap.loadbalancer.server.port: 17170
       homepage.group: Admin
       homepage.name: User management
       homepage.icon: mdi-account-supervisor
-      homepage.href: https://ldap.{{ tertiary_domain }}/
+      homepage.href: https://ldap.{{ primary_domain }}/
       homepage.description: lldap
       homepage.siteMonitor: http://lldap:17170
       homepage.weight: 20
@@ -71,11 +71,11 @@ services:
     labels:
       traefik.enable: true
       traefik.docker.network: doc_web
-      traefik.http.routers.auth.rule: Host(`auth.{{ tertiary_domain }}`)
+      traefik.http.routers.auth.rule: Host(`auth.{{ primary_domain }}`)
       traefik.http.routers.auth.observability.accessLogs: true
       traefik.http.routers.auth.tls.certresolver: default
       traefik.http.services.auth.loadbalancer.server.port: 9091
-      traefik.http.middlewares.authelia.forwardAuth.address: http://authelia:9091/api/verify?rd=https%3A%2F%2Fauth.{{ tertiary_domain }}%2F
+      traefik.http.middlewares.authelia.forwardAuth.address: http://authelia:9091/api/verify?rd=https%3A%2F%2Fauth.{{ primary_domain }}%2F
       traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader: true
       traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders: Remote-User,Remote-Groups,Remote-Name,Remote-Email
       traefik.http.middlewares.authelia.forwardauth.maxResponseBodySize: 1048576
@@ -85,7 +85,7 @@ services:
       homepage.group: Admin
       homepage.name: Authentication
       homepage.icon: authelia.png
-      homepage.href: https://auth.{{ tertiary_domain }}/
+      homepage.href: https://auth.{{ primary_domain }}/
       homepage.description: Authelia
       homepage.siteMonitor: http://authelia:9091
       homepage.weight: 15

@@ -51,9 +51,9 @@ services:
     networks:
       web_ext:
     environment:
-      ENTE_API_ORIGIN: "https://api.ente.{{ tertiary_domain }}"
-      ENTE_ALBUMS_ORIGIN: "https://albums.ente.{{ tertiary_domain }}"
-      ENTE_PHOTOS_ORIGIN: "https://ente.{{ tertiary_domain }}"
+      ENTE_API_ORIGIN: "https://api.ente.{{ primary_domain }}"
+      ENTE_ALBUMS_ORIGIN: "https://albums.ente.{{ primary_domain }}"
+      ENTE_PHOTOS_ORIGIN: "https://ente.{{ primary_domain }}"
 
   ente_db:
     image: postgres:15

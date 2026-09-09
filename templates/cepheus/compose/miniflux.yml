@@ -21,29 +21,29 @@ services:
     environment:
       LOG_LEVEL: warning
       RUN_MIGRATIONS: 1
-      BASE_URL: https://rss.{{ tertiary_domain }}
+      BASE_URL: https://rss.{{ primary_domain }}
       CLEANUP_ARCHIVE_UNREAD_DAYS: -1
       CLEANUP_ARCHIVE_READ_DAYS: -1
       POLLING_FREQUENCY: 5
       SCHEDULER_ROUND_ROBIN_MIN_INTERVAL: 60
       OAUTH2_PROVIDER: oidc
       OAUTH2_CLIENT_ID: miniflux
-      OAUTH2_REDIRECT_URL: https://rss.{{ tertiary_domain }}/oauth2/oidc/callback
-      OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.{{ tertiary_domain }}
+      OAUTH2_REDIRECT_URL: https://rss.{{ primary_domain }}/oauth2/oidc/callback
+      OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.{{ primary_domain }}
       OAUTH2_USER_CREATION: 1
       # Needed to save to Karakeep
       INTEGRATION_ALLOW_PRIVATE_NETWORKS: 1
 
     labels:
       traefik.enable: true
-      traefik.http.routers.rss.rule: Host(`rss.{{ tertiary_domain }}`)
+      traefik.http.routers.rss.rule: Host(`rss.{{ primary_domain }}`)
       traefik.http.routers.rss.tls.certresolver: default
       traefik.http.services.rss.loadbalancer.server.port: 8080
       traefik.http.routers.rss.middlewares: authelia
       homepage.group: Apps
       homepage.name: Feed reader
       homepage.icon: miniflux.png
-      homepage.href: https://rss.{{ tertiary_domain }}/
+      homepage.href: https://rss.{{ primary_domain }}/
       homepage.siteMonitor: http://miniflux:8080
       homepage.weight: 25
       homepage.description: Miniflux

@@ -29,14 +29,14 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.desktop.rule: Host(`desktop.{{ tertiary_domain }}`)
+      traefik.http.routers.desktop.rule: Host(`desktop.{{ primary_domain }}`)
       traefik.http.routers.desktop.tls.certresolver: default
       traefik.http.services.desktop.loadbalancer.server.port: 3000
       traefik.http.routers.desktop.middlewares: authelia
       homepage.group: Apps
       homepage.name: Desktops
       homepage.icon: webtop.png
-      homepage.href: https://desktop.{{ tertiary_domain }}/
+      homepage.href: https://desktop.{{ primary_domain }}/
       homepage.siteMonitor: http://webtop:3000
       homepage.weight: 26
       homepage.description: Webtop

@@ -14,11 +14,11 @@ services:
     environment:
       USER_UID: 4002
       USER_GID: 4002
-      GITEA__SERVER__ROOT_URL: https://git.{{ tertiary_domain }}
+      GITEA__SERVER__ROOT_URL: https://git.{{ primary_domain }}
       GITEA__SERVICE__DISABLE_REGISTRATION: true
       GITEA__MIGRATIONS__ALLOW_LOCALNETWORKS: true
       GITEA__INDEXER__REPO_INDEXER_ENABLED: true
-      GITEA__WEBHOOK__ALLOWED_HOST_LIST: "*.{{ tertiary_domain }}"
+      GITEA__WEBHOOK__ALLOWED_HOST_LIST: "*.{{ primary_domain }}"
 
     volumes:
       - "{{ app_root }}/gitea:/data"
@@ -30,14 +30,14 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.git.rule: Host(`git.{{ tertiary_domain }}`)
+      traefik.http.routers.git.rule: Host(`git.{{ primary_domain }}`)
       traefik.http.routers.git.tls.certresolver: default
       traefik.http.services.git.loadbalancer.server.port: 80
       # traefik.http.routers.git.middlewares: authelia
       homepage.group: Apps
       homepage.name: Git hosting
       homepage.icon: gitea.png
-      homepage.href: https://git.{{ tertiary_domain }}/
+      homepage.href: https://git.{{ primary_domain }}/
       homepage.description: Gitea
       homepage.siteMonitor: http://gitea
       homepage.weight: 50
@@ -54,8 +54,8 @@ services:
 
     env_file: drone.env
     environment:
-      DRONE_GITEA_SERVER: https://git.{{ tertiary_domain }}
-      DRONE_SERVER_HOST: drone.{{ tertiary_domain }}
+      DRONE_GITEA_SERVER: https://git.{{ primary_domain }}
+      DRONE_SERVER_HOST: drone.{{ primary_domain }}
       DRONE_SERVER_PROTO: https
       DRONE_DATADOG_ENABLED: false
 
@@ -64,14 +64,14 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.drone.rule: Host(`drone.{{ tertiary_domain }}`)
+      traefik.http.routers.drone.rule: Host(`drone.{{ primary_domain }}`)
       traefik.http.routers.drone.tls.certresolver: default
       traefik.http.services.drone.loadbalancer.server.port: 80
       traefik.http.routers.drone.middlewares: authelia
       homepage.group: Apps
       homepage.name: CI/CD
       homepage.icon: drone.png
-      homepage.href: https://drone.{{ tertiary_domain }}/
+      homepage.href: https://drone.{{ primary_domain }}/
       homepage.description: Drone
       homepage.siteMonitor: http://drone
       homepage.weight: 55

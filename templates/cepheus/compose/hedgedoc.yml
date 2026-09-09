@@ -15,9 +15,9 @@ services:
       PGID: 4022
       TZ: {{ timezone }}
       CMD_LOGLEVEL: warn
-      CMD_DOMAIN: paste.{{ tertiary_domain }}
+      CMD_DOMAIN: paste.{{ primary_domain }}
       CMD_PROTOCOL_USESSL: true
-      CMD_ALLOW_ORIGIN: "[paste.{{ tertiary_domain }}]"
+      CMD_ALLOW_ORIGIN: "[paste.{{ primary_domain }}]"
       CMD_ALLOW_ANONYMOUS: false # guests can't create notes...
       CMD_ALLOW_ANONYMOUS_EDITS: true # ...but they can edit them
       CMD_DEFAULT_PERMISSION: limited # default new notes to only viewable by logged-in users
@@ -27,11 +27,11 @@ services:
 
 
       # Keycloak SSO configuration
-      CMD_OAUTH2_PROVIDERNAME: auth.{{ tertiary_domain }}
+      CMD_OAUTH2_PROVIDERNAME: auth.{{ primary_domain }}
       CMD_OAUTH2_CLIENT_ID: hedgedoc # from Keycloak
-      CMD_OAUTH2_USER_PROFILE_URL: https://auth.{{ tertiary_domain }}/api/oidc/userinfo
-      CMD_OAUTH2_TOKEN_URL: https://auth.{{ tertiary_domain }}/api/oidc/token
-      CMD_OAUTH2_AUTHORIZATION_URL: https://auth.{{ tertiary_domain }}/api/oidc/authorization
+      CMD_OAUTH2_USER_PROFILE_URL: https://auth.{{ primary_domain }}/api/oidc/userinfo
+      CMD_OAUTH2_TOKEN_URL: https://auth.{{ primary_domain }}/api/oidc/token
+      CMD_OAUTH2_AUTHORIZATION_URL: https://auth.{{ primary_domain }}/api/oidc/authorization
       CMD_OAUTH2_USER_PROFILE_USERNAME_ATTR: sub
       CMD_OAUTH2_USER_PROFILE_DISPLAY_NAME_ATTR: name
       CMD_OAUTH2_USER_PROFILE_EMAIL_ATTR: email
@@ -47,7 +47,7 @@ services:
 
     # labels:
     #   traefik.enable: true
-    #   traefik.http.routers.paste.rule: Host(`paste.{{ tertiary_domain }}`)
+    #   traefik.http.routers.paste.rule: Host(`paste.{{ primary_domain }}`)
     #   traefik.http.routers.paste.tls.certresolver: default
     #   traefik.http.services.paste.loadbalancer.server.port: 3000
       # Require keycloak sign-in to access any pages

@@ -28,14 +28,14 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.home.rule: Host(`home.{{ tertiary_domain }}`)
+      traefik.http.routers.home.rule: Host(`home.{{ primary_domain }}`)
       traefik.http.routers.home.tls.certresolver: default
       traefik.http.services.home.loadbalancer.server.port: 8123
 #      traefik.http.routers.home.middlewares: authelia
       homepage.group: Apps
       homepage.name: Home management
       homepage.icon: home-assistant.png
-      homepage.href: https://home.{{ tertiary_domain }}/
+      homepage.href: https://home.{{ primary_domain }}/
       homepage.weight: 5
       homepage.description: Home Assistant
       homepage.siteMonitor: http://home_assistant:8123
@@ -63,14 +63,14 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.auto.rule: Host(`auto.{{ tertiary_domain }}`)
+      traefik.http.routers.auto.rule: Host(`auto.{{ primary_domain }}`)
       traefik.http.routers.auto.tls.certresolver: default
       traefik.http.services.auto.loadbalancer.server.port: 1880
       traefik.http.routers.auto.middlewares: authelia
       homepage.group: Apps
       homepage.name: Automation workflows
       homepage.icon: node-red.png
-      homepage.href: https://auto.{{ tertiary_domain }}/
+      homepage.href: https://auto.{{ primary_domain }}/
       homepage.weight: 64
       homepage.description: Node-RED
       homepage.siteMonitor: http://node_red:1880
@@ -114,14 +114,14 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.zigbee.rule: Host(`zigbee.{{ tertiary_domain }}`)
+      traefik.http.routers.zigbee.rule: Host(`zigbee.{{ primary_domain }}`)
       traefik.http.routers.zigbee.tls.certresolver: default
       traefik.http.services.zigbee.loadbalancer.server.port: 8080
       traefik.http.routers.zigbee.middlewares: authelia
       homepage.group: Apps
       homepage.name: Mesh networking
       homepage.icon: zigbee2mqtt.png
-      homepage.href: https://zigbee.{{ tertiary_domain }}/
+      homepage.href: https://zigbee.{{ primary_domain }}/
       homepage.description: Zigbee2MQTT
       homepage.siteMonitor: http://zigbee2mqtt:8080
       homepage.weight: 65

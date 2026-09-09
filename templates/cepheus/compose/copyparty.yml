@@ -7,7 +7,7 @@ services:
     container_name: copyparty
     image: copyparty/ac:latest
     command: ["--localtime"]
-    hostname: party.{{ tertiary_domain }}
+    hostname: party.{{ primary_domain }}
     user: "4021:4021"  # should match the user/group of your fileshare volumes
     networks:
       web:
@@ -27,14 +27,14 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.copyparty.rule: Host(`party.{{ tertiary_domain }}`)
+      traefik.http.routers.copyparty.rule: Host(`party.{{ primary_domain }}`)
       traefik.http.routers.copyparty.tls.certresolver: default
       traefik.http.services.copyparty.loadbalancer.server.port: 3923
       # traefik.http.routers.copyparty.middlewares: authelia
       homepage.group: Apps
       homepage.name: Sharing
       homepage.icon: copyparty.png
-      homepage.href: https://party.{{ tertiary_domain }}/
+      homepage.href: https://party.{{ primary_domain }}/
       homepage.weight: 53
       homepage.description: copyparty
       homepage.siteMonitor: http://copyparty:3923

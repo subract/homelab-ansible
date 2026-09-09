@@ -32,17 +32,17 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
     environment:
-      JELLYFIN_PublishedServerUrl: media.{{ tertiary_domain }}
+      JELLYFIN_PublishedServerUrl: media.{{ primary_domain }}
 
     labels:
       traefik.enable: true
-      traefik.http.routers.media.rule: Host(`media.{{ tertiary_domain }}`)
+      traefik.http.routers.media.rule: Host(`media.{{ primary_domain }}`)
       traefik.http.routers.media.tls.certresolver: default
       traefik.http.services.media.loadbalancer.server.port: 8096
       homepage.group: Apps
       homepage.name: Media
       homepage.icon: jellyfin.png
-      homepage.href: https://media.{{ tertiary_domain }}/
+      homepage.href: https://media.{{ primary_domain }}/
       homepage.weight: 61
       homepage.description: Jellyfin
       homepage.siteMonitor: http://jellyfin:8096

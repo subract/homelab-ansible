@@ -15,7 +15,7 @@ services:
     environment:
       PUID: 4004
       PGID: 4004
-      BASE_URL: https://change.{{ tertiary_domain }}/
+      BASE_URL: https://change.{{ primary_domain }}/
       # USE_X_SETTINGS: 1
       HIDE_REFERER: true
       LOGGER_LEVEL: WARNING
@@ -30,14 +30,14 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.change.rule: Host(`change.{{ tertiary_domain }}`)
+      traefik.http.routers.change.rule: Host(`change.{{ primary_domain }}`)
       traefik.http.routers.change.tls.certresolver: default
       traefik.http.services.change.loadbalancer.server.port: 5000
       traefik.http.routers.change.middlewares: authelia
       homepage.group: Apps
       homepage.name: Change monitoring
       homepage.icon: changedetection-io.png
-      homepage.href: https://change.{{ tertiary_domain }}/
+      homepage.href: https://change.{{ primary_domain }}/
       homepage.description: Changedetection.io
       homepage.siteMonitor: http://changedetection:5000
       homepage.weight: 40

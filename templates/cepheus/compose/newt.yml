@@ -28,4 +28,4 @@ services:
 
     env_file: newt.env
     environment:
-      PANGOLIN_ENDPOINT: https://services.{{ tertiary_domain }}
+      PANGOLIN_ENDPOINT: https://services.{{ primary_domain }}

@@ -21,13 +21,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.chef.rule: Host(`chef.{{ tertiary_domain }}`)
+      traefik.http.routers.chef.rule: Host(`chef.{{ primary_domain }}`)
       traefik.http.routers.chef.tls.certresolver: default
       traefik.http.services.chef.loadbalancer.server.port: 8000
       homepage.group: Apps
       homepage.name: Swiss army knife
       homepage.icon: cyberchef.png
-      homepage.href: https://chef.{{ tertiary_domain }}/
+      homepage.href: https://chef.{{ primary_domain }}/
       homepage.description: CyberChef
       homepage.siteMonitor: http://cyberchef:8000
       homepage.weight: 60
@@ -50,13 +50,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.tools.rule: Host(`tools.{{ tertiary_domain }}`)
+      traefik.http.routers.tools.rule: Host(`tools.{{ primary_domain }}`)
       traefik.http.routers.tools.tls.certresolver: default
       traefik.http.services.tools.loadbalancer.server.port: 80
       homepage.group: Apps
       homepage.name: Toolbox
       homepage.icon: it-tools.png
-      homepage.href: https://tools.{{ tertiary_domain }}/
+      homepage.href: https://tools.{{ primary_domain }}/
       homepage.description: it-tools
       homepage.siteMonitor: http://it-tools:80
       homepage.weight: 61

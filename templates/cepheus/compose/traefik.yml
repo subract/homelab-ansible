@@ -69,22 +69,22 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.api.rule: Host(`proxy.{{ tertiary_domain }}`)
+      traefik.http.routers.api.rule: Host(`proxy.{{ primary_domain }}`)
       traefik.http.routers.api.tls.certresolver: default
       traefik.http.routers.api.service: api@internal
       traefik.http.routers.api.middlewares: auth
       traefik.http.middlewares.auth.basicauth.users: ${TRAEFIK_USERS}
       # Below will cause Traefik to request a wildcard cert
-      traefik.http.routers.api.tls.domains[0].main: "{{ tertiary_domain }}"
-      traefik.http.routers.api.tls.domains[0].sans: "*.{{ tertiary_domain }}"
+      traefik.http.routers.api.tls.domains[0].main: "{{ primary_domain }}"
+      traefik.http.routers.api.tls.domains[0].sans: "*.{{ primary_domain }}"
       homepage.group: Admin
       homepage.name: Reverse proxy
       homepage.icon: traefik.png
-      homepage.href: https://proxy.{{ tertiary_domain }}/
+      homepage.href: https://proxy.{{ primary_domain }}/
       homepage.description: Traefik
-      homepage.siteMonitor: https://proxy.{{ tertiary_domain }}
+      homepage.siteMonitor: https://proxy.{{ primary_domain }}
       homepage.widget.type: traefik
-      homepage.widget.url: https://proxy.{{ tertiary_domain }}
+      homepage.widget.url: https://proxy.{{ primary_domain }}
       homepage.widget.username: aven
       homepage.widget.password: ${TRAEFIK_PASSWORD}
       homepage.weight: 25

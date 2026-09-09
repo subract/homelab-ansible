@@ -28,13 +28,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.asterisk.rule: Host(`asterisk.{{ tertiary_domain }}`)
+      traefik.http.routers.asterisk.rule: Host(`asterisk.{{ primary_domain }}`)
       traefik.http.routers.asterisk.tls.certresolver: default
       traefik.http.services.asterisk.loadbalancer.server.port: 8088
       homepage.group: Apps
       homepage.name: Asterisk
       homepage.icon: asterisk.png
-      homepage.href: https://asterisk.{{ tertiary_domain }}/
+      homepage.href: https://asterisk.{{ primary_domain }}/
       homepage.weight: 20
       homepage.description: VoIP PBX
       homepage.siteMonitor: http://asterisk:8088

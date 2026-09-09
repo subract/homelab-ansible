@@ -42,7 +42,7 @@ services:
     env_file:
       - bar_assistant.env
     environment:
-      APP_URL: https://bar.{{ tertiary_domain }}/bar
+      APP_URL: https://bar.{{ primary_domain }}/bar
       MEILISEARCH_HOST: http://ba_meilisearch:7700.
       REDIS_HOST: ba_redis
       CACHE_DRIVER: redis
@@ -61,8 +61,8 @@ services:
     depends_on:
       - bar_assistant
     environment:
-      API_URL: https://bar.{{ tertiary_domain }}/bar
-      MEILISEARCH_URL: https://bar.{{ tertiary_domain }}/search
+      API_URL: https://bar.{{ primary_domain }}/bar
+      MEILISEARCH_URL: https://bar.{{ primary_domain }}/search
     restart: unless-stopped
 
   ba_webserver:
@@ -86,7 +86,7 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.bar.rule: Host(`bar.{{ tertiary_domain }}`)
+      traefik.http.routers.bar.rule: Host(`bar.{{ primary_domain }}`)
       traefik.http.routers.bar.tls.certresolver: default
       traefik.http.services.bar.loadbalancer.server.port: 3000
       # TODO
@@ -94,7 +94,7 @@ services:
       homepage.group: Apps
       homepage.name: Bar management
       homepage.icon: bar-assistant.png
-      homepage.href: https://bar.{{ tertiary_domain }}/
+      homepage.href: https://bar.{{ primary_domain }}/
       homepage.description: Bar Assistant
       homepage.siteMonitor: http://ba_webserver:3000
       homepage.weight: 42

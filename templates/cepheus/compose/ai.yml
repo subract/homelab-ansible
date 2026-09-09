@@ -21,13 +21,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.chat.rule: Host(`chat.{{ tertiary_domain }}`)
+      traefik.http.routers.chat.rule: Host(`chat.{{ primary_domain }}`)
       traefik.http.routers.chat.tls.certresolver: default
       traefik.http.services.chat.loadbalancer.server.port: 8080
       homepage.group: Admin
       homepage.name: AI chat
       homepage.icon: open-webui.png
-      homepage.href: https://chat.{{ tertiary_domain }}/
+      homepage.href: https://chat.{{ primary_domain }}/
       homepage.description: Open WebUI
       homepage.siteMonitor: http://chat:8080
       homepage.weight: 21

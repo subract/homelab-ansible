@@ -39,7 +39,7 @@ services:
       DATABASE_PORT: 5432
       DATABASE_USERNAME: postgres
       DATABASE_NAME: dawarich_production
-      APPLICATION_HOSTS: "places.{{ tertiary_domain }},localhost,::1,127.0.0.1"
+      APPLICATION_HOSTS: "places.{{ primary_domain }},localhost,::1,127.0.0.1"
       TIME_ZONE: "{{ timezone }}"
       APPLICATION_PROTOCOL: http
       PROMETHEUS_EXPORTER_ENABLED: false
@@ -57,13 +57,13 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.places.rule: Host(`places.{{ tertiary_domain }}`)
+      traefik.http.routers.places.rule: Host(`places.{{ primary_domain }}`)
       traefik.http.routers.places.tls.certresolver: default
       traefik.http.services.places.loadbalancer.server.port: 3000
       homepage.group: Apps
       homepage.name: Location history
       homepage.icon: dawarich.png
-      homepage.href: https://places.{{ tertiary_domain }}/
+      homepage.href: https://places.{{ primary_domain }}/
       homepage.weight: 21
       homepage.description: Dawarich
       homepage.siteMonitor: http://dawarich_app:3000
@@ -111,7 +111,7 @@ services:
       DATABASE_PORT: 5432
       DATABASE_USERNAME: postgres
       DATABASE_NAME: dawarich_production
-      APPLICATION_HOSTS: "places.{{ tertiary_domain }},localhost,::1,127.0.0.1"
+      APPLICATION_HOSTS: "places.{{ primary_domain }},localhost,::1,127.0.0.1"
       APPLICATION_PROTOCOL: http
       BACKGROUND_PROCESSING_CONCURRENCY: 3
       PROMETHEUS_EXPORTER_ENABLED: false

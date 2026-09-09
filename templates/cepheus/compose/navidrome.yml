@@ -17,13 +17,13 @@ services:
       - "{{ data_root }}/music:/music:ro"
     labels:
       traefik.enable: true
-      traefik.http.routers.music.rule: Host(`music.{{ tertiary_domain }}`)
+      traefik.http.routers.music.rule: Host(`music.{{ primary_domain }}`)
       traefik.http.routers.music.tls.certresolver: default
       traefik.http.services.music.loadbalancer.server.port: 4533
       homepage.group: Apps
       homepage.name: Music streaming
       homepage.icon: navidrome.png
-      homepage.href: https://navidrome.{{ tertiary_domain }}
+      homepage.href: https://navidrome.{{ primary_domain }}
       homepage.description: Navidrome
 
   # beets:
@@ -42,11 +42,11 @@ services:
   #     - "{{ data_root }}/music:/music"
   #   labels:
   #     traefik.enable: true
-  #     traefik.http.routers.beets.rule: Host(`beets.{{ tertiary_domain }}`)
+  #     traefik.http.routers.beets.rule: Host(`beets.{{ primary_domain }}`)
   #     traefik.http.routers.beets.tls.certresolver: default
   #     traefik.http.services.beets.loadbalancer.server.port: 8337
   #     homepage.group: Apps
   #     homepage.name: Music organization
   #     homepage.icon: beets.png
-  #     homepage.href: https://beets.{{ tertiary_domain }}
+  #     homepage.href: https://beets.{{ primary_domain }}
   #     homepage.description: beets

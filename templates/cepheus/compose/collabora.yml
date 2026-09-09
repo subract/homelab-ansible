@@ -17,7 +17,7 @@ services:
       - CHOWN
 
     environment:
-      aliasgroup1: "https://cloud.{{ tertiary_domain }}:443"
+      aliasgroup1: "https://cloud.{{ primary_domain }}:443"
       extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
 
     volumes:
@@ -29,6 +29,6 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.collabora.rule: Host(`collabora.{{ tertiary_domain }}`)
+      traefik.http.routers.collabora.rule: Host(`collabora.{{ primary_domain }}`)
       traefik.http.routers.collabora.tls.certresolver: default
       traefik.http.services.collabora.loadbalancer.server.port: 9980

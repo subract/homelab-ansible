@@ -17,7 +17,7 @@ services:
       PUID: 4005
       PGID: 4005
       LOG_LEVEL: warning
-      HOMEPAGE_ALLOWED_HOSTS: dash.{{ tertiary_domain }}
+      HOMEPAGE_ALLOWED_HOSTS: dash.{{ primary_domain }}
 
     volumes:
       - "{{ app_root }}/homepage/config:/app/config"
@@ -29,7 +29,7 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.dash.rule: Host(`dash.{{ tertiary_domain }}`)
+      traefik.http.routers.dash.rule: Host(`dash.{{ primary_domain }}`)
       traefik.http.routers.dash.tls.certresolver: default
       traefik.http.services.dash.loadbalancer.server.port: 3000
       traefik.http.routers.dash.middlewares: authelia

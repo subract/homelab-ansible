@@ -24,7 +24,7 @@ services:
 
     environment:
       LOG_LEVEL: notice
-      NEXTAUTH_URL: https://bookmarks.{{ tertiary_domain }}
+      NEXTAUTH_URL: https://bookmarks.{{ primary_domain }}
       MEILI_ADDR: http://karakeep_meilisearch:7700
       BROWSER_WEB_URL: http://karakeep_chrome:9222
       DATA_DIR: /data
@@ -38,20 +38,20 @@ services:
       INFERENCE_CONTEXT_LENGTH: 131072
 
       DISABLE_PASSWORD_AUTH: true
-      OAUTH_WELLKNOWN_URL: https://auth.{{ tertiary_domain }}/.well-known/openid-configuration
-      OAUTH_PROVIDER_NAME: auth.{{ tertiary_domain }}
+      OAUTH_WELLKNOWN_URL: https://auth.{{ primary_domain }}/.well-known/openid-configuration
+      OAUTH_PROVIDER_NAME: auth.{{ primary_domain }}
       # Allowing signin to existing accounts with SSO
       OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING: true
 
     labels:
       traefik.enable: true
-      traefik.http.routers.karakeep.rule: Host(`bookmarks.{{ tertiary_domain }}`)
+      traefik.http.routers.karakeep.rule: Host(`bookmarks.{{ primary_domain }}`)
       traefik.http.routers.karakeep.tls.certresolver: default
       traefik.http.services.karakeep.loadbalancer.server.port: 3000
       homepage.group: Apps
       homepage.name: Bookmarks
       homepage.icon: karakeep.png
-      homepage.href: https://bookmarks.{{ tertiary_domain }}/
+      homepage.href: https://bookmarks.{{ primary_domain }}/
       homepage.weight: 18
       homepage.description: karakeep
       homepage.siteMonitor: http://karakeep:3000

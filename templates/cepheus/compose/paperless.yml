@@ -25,7 +25,7 @@ services:
       PAPERLESS_TIKA_ENABLED: 1
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gpaperless_gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://paperless_tika:9998
-      PAPERLESS_URL: https://paper.{{ tertiary_domain }}
+      PAPERLESS_URL: https://paper.{{ primary_domain }}
       PAPERLESS_TIME_ZONE: {{ timezone }}
       # Continue and invalidate digital signatures - Paperless keeps originals as well
       PAPERLESS_OCR_USER_ARGS: '{"continue_on_soft_render_error": true,"invalidate_digital_signatures": true}'
@@ -47,19 +47,19 @@ services:
 
     labels:
       traefik.enable: true
-      traefik.http.routers.paper.rule: Host(`paper.{{ tertiary_domain }}`)
+      traefik.http.routers.paper.rule: Host(`paper.{{ primary_domain }}`)
       traefik.http.routers.paper.tls.certresolver: default
       traefik.http.services.paper.loadbalancer.server.port: 8000
       # traefik.http.routers.paper.middlewares: authelia
       homepage.group: Apps
       homepage.name: Document management
       homepage.icon: paperless-ngx.png
-      homepage.href: https://paper.{{ tertiary_domain }}/
+      homepage.href: https://paper.{{ primary_domain }}/
       homepage.weight: 15
       homepage.description: Paperless
       homepage.siteMonitor: http://paperless:8000
       homepage.widget.type: paperlessngx
-      homepage.widget.url: https://paper.{{ tertiary_domain }}
+      homepage.widget.url: https://paper.{{ primary_domain }}
       homepage.widget.key: ${PAPERLESS_API_KEY}
 
   paperless_redis:
