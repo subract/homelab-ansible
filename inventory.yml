@@ -26,6 +26,7 @@ all:
       hosts:
         cepheus:
           app_root: /app
+          data_root: /data
         web03:
           app_root: /opt
         larkhaven:
