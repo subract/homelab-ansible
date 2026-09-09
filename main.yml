@@ -109,7 +109,7 @@
     - role: artis3n.tailscale.machine
       tags: tailscale
       vars:
-        tailscale_args: --advertise-tags=tag:onsite,tag:server --snat-subnet-routes=false --accept-routes
+        tailscale_args: --advertise-tags=tag:onsite,tag:server --snat-subnet-routes=false --accept-routes=false
 
 - name: web03
   hosts: web03
