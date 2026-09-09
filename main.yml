@@ -63,6 +63,7 @@
     - zigbee_udev
     - wpa_supplicant
     - liveness_monitor
+    - dots
 
 - name: Docker roles
   hosts: docker
