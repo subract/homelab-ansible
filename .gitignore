@@ -1,4 +1,4 @@
 .vscode/
 .DS_STORE
 .vale.ini
-.ansible/.lock
+.ansible/
