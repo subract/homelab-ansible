@@ -1,6 +1,0 @@
----
-- name: Reload network interfaces
-  command: ifreload -a
-  async: 20
-  poll: 2
-  changed_when: true

@@ -42,8 +42,5 @@ Currently managing the following:
 	- [ipinfo.tw](https://github.com/PeterDaveHello/ipinfo.tw) - simple IP check
 	- [Mastodon](https://joinmastodon.org/) - (un)federated social media
 	- [Vikunja](https://vikunja.io/) - to-dos and project management
-- A couple of Arch workstations
-	- Managing [packages](roles/arch_workstation/tasks/packages.yaml), services, and [sundry other configuration](roles/arch_workstation/tasks/main.yml)
-	- Using [secure boot](roles/arch_secureboot/tasks/main.yml) for boot integrity with full-disk encryption
 
 This is a living repo, evolving as I add and manage additional services. As I tackle the challenges of managing additional systems, I'll expand this repo to include them.

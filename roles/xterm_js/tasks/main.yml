@@ -1,7 +1,0 @@
----
-- name: Enable terminal on serial port
-  tags: config
-  systemd:
-    name: serial-getty@ttyS0.service
-    enabled: true
-    state: started

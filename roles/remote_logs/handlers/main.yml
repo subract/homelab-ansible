@@ -1,6 +1,0 @@
----
-- name: Restart Docker daemon
-  tags: config, logging, docker
-  service:
-    name: docker.socket
-    state: restarted

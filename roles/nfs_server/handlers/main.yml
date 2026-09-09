@@ -1,6 +1,0 @@
----
-- name: Restart nfs-server
-  tags: config, nfs
-  service:
-    name: nfs-server
-    state: restarted

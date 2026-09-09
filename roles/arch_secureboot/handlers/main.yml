@@ -1,5 +1,0 @@
----
-- name: Configure refind to use preloader-signed
-  tags: secureboot
-  command:
-    cmd: refind-install --preloader /usr/share/preloader-signed/PreLoader.efi --yes

@@ -1,7 +1,0 @@
----
-- name: Install WireGuard packages
-  tags: pkg
-  package:
-    name:
-      - wireguard-tools # CLI tools, including wg-quick
-      - resolvconf # needed for automated DNS edits

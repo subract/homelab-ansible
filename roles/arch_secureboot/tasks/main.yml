@@ -1,8 +1,0 @@
----
-- name: Install preloader-signed
-  tags: pkg, aur, secureboot
-  become: false
-  kewlfft.aur.aur:
-    name: preloader-signed
-    state: present
-  notify: Configure refind to use preloader-signed
