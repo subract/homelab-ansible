@@ -140,5 +140,5 @@
       include_tasks:
         file: "{{ item }}"
       with_first_found:
-        - files: host_tasks/{{ ansible_hostname }}.yml
+        - files: host_tasks/{{ ansible_facts["hostname"] }}.yml
           skip: true

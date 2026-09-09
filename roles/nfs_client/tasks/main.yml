@@ -22,7 +22,7 @@
 
 # If using Tailscale, configure NFS to depend on it being up
 - name: Configure NFS to depend on Tailscale
-  when: "'tailscale0' in ansible_interfaces"
+  when: "'tailscale0' in ansible_facts['interfaces']"
   block:
   # We need the nfs client to depend on the tailscale tunnel
     - name: Add lines to nfs-client.target
@@ -34,7 +34,7 @@
       with_items:
         - After=tailscaled.service
         - Wants=tailscaled.service
-      when: "'tailscale0' in ansible_interfaces"
+      when: "'tailscale0' in ansible_facts['interfaces']"
       notify: Reload systemd
 
     # We need Tailscale not to report being up for a few seconds
