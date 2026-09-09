@@ -129,18 +129,6 @@
   roles:
     - backblaze
 
-# - name: ixion
-#   hosts: ixion
-#   become: true
-#   gather_facts: false
-#   ignore_unreachable: true
-#   roles:
-#     - arch_workstation
-#     - arch_laptop
-#     - arch_secureboot
-#     - role: artis3n.tailscale.machine
-#       tags: tailscale
-
 - name: Host-specific tasks
   hosts: all
   gather_facts: false
