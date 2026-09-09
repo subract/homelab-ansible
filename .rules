@@ -1,0 +1,65 @@
+I have a number of standards that I use when writing Docker Compose files:
+
+- Always declare a container_name equal to the name of the Compose service.
+- For services with several containers, name them as `<service name>_<subname>`, e.g. `nextcloud_db`
+- Always use `restart: 'unless-stopped'`
+- Attach containers to the network `web` unless otherwise instructed. Include a basic declaration for this network in the compose file (no need to declare it as external).
+- If a service requires multiple containers with networking, create a new network with the service name as its name.
+- I use Ansible to template out the files, so use the template `{{ app_root }}` as needed to specify the directory in which volumes are bound. For example, Jellyfin might include the following:
+```
+    volumes:
+      - "{{ app_root }}/jellyfin/config:/config"
+```
+- If you need to reference the URL at which a service will be accessible, use <service name>.{{ tertiary_domain }}
+- Set the timezone to {{ timezone }}
+- Declare environment variables using `key: value` syntax, not `- key=value`
+- If the project provides env vars to disable telemetry/statistics/etc, include them.
+- If the app is to be accessed via the web, I use Traefik as a reverse proxy, so set up labels similar to the below example:
+```
+    labels:
+      traefik.enable: true
+      traefik.http.routers.media.rule: Host(`media.{{ tertiary_domain }}`)
+      traefik.http.routers.media.tls.certresolver: default
+      traefik.http.services.media.loadbalancer.server.port: 8096
+```
+- Because Traefik is handing TLS termination, if an app provides a TLS endpoint in addition to HTTP, point Traefik to the HTTP endpoint.
+- I use Homepage with Docker label support, so add those as well (I prefer to use the name as the description and vice versa). Put it in the group "Apps".
+
+
+Here's an example of a well-formatted reference Compose file:
+```
+networks:
+  web:
+
+services:
+  beaverhabits:
+    container_name: beaverhabits
+    image: daya0576/beaverhabits:latest
+    restart: unless-stopped
+    user: 4013:4013
+
+    networks:
+      web:
+
+    environment:
+      MAX_USER_COUNT: 1
+      ENABLE_IOS_STANDALONE: true
+      HABITS_STORAGE: DATABASE
+      INDEX_SHOW_HABIT_COUNT: true
+
+    volumes:
+      - "{{ app_root }}/beaverhabits:/app/.user/"
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.habits.rule: Host(`habits.{{ tertiary_domain }}`)
+      traefik.http.routers.habits.tls.certresolver: default
+      traefik.http.services.habits.loadbalancer.server.port: 8080
+      homepage.group: Apps
+      homepage.name: Habit tracking
+      homepage.icon: beaverhabits.png
+      homepage.href: https://habits.{{ tertiary_domain }}/
+      homepage.weight: 17
+      homepage.description: Beaver Habits
+      homepage.siteMonitor: http://beaverhabits:8945
+```
