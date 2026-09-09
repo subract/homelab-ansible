@@ -1,0 +1,52 @@
+networks:
+  web:
+
+services:
+  navidrome:
+    container_name: navidrome
+    image: deluan/navidrome:latest
+    restart: 'unless-stopped'
+    networks:
+      - web
+    environment:
+      ND_LOGLEVEL: info
+      ND_ENABLETRANSCODINGCONFIG: true
+      TZ: "{{ timezone }}"
+    volumes:
+      - "{{ app_root }}/navidrome/data:/data"
+      - "{{ data_root }}/music:/music:ro"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.music.rule: Host(`music.{{ tertiary_domain }}`)
+      traefik.http.routers.music.tls.certresolver: default
+      traefik.http.services.music.loadbalancer.server.port: 4533
+      homepage.group: Apps
+      homepage.name: Music streaming
+      homepage.icon: navidrome.png
+      homepage.href: https://navidrome.{{ tertiary_domain }}
+      homepage.description: Navidrome
+
+  # beets:
+  #   container_name: beets
+  #   image: lscr.io/linuxserver/beets:latest
+  #   restart: 'unless-stopped'
+  #   networks:
+  #     - web
+  #   environment:
+  #     # PUID: 1000
+  #     # PGID: 1000
+  #     TZ: "{{ timezone }}"
+  #   volumes:
+  #     - "{{ app_root }}/beets/config:/config"
+  #     - "{{ app_root }}/beets/import:/downloads"
+  #     - "{{ data_root }}/music:/music"
+  #   labels:
+  #     traefik.enable: true
+  #     traefik.http.routers.beets.rule: Host(`beets.{{ tertiary_domain }}`)
+  #     traefik.http.routers.beets.tls.certresolver: default
+  #     traefik.http.services.beets.loadbalancer.server.port: 8337
+  #     homepage.group: Apps
+  #     homepage.name: Music organization
+  #     homepage.icon: beets.png
+  #     homepage.href: https://beets.{{ tertiary_domain }}
+  #     homepage.description: beets
