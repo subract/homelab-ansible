@@ -24,37 +24,6 @@
     owner: root
     group: docker
 
-- name: Read /etc/fstab for NFS mounts
-  tags: nfs, docker
-  slurp:
-    path: /etc/fstab
-  register: fstab_content
-
-- name: Check if NFS mounts are present
-  tags: nfs, docker
-  set_fact:
-    nfs_configured: "{{ 'nfs' in fstab_content.content | b64decode }}"
-
-- name: Ensure docker starts after NFS if needed
-  tags: nfs, docker
-  when: nfs_configured
-  block:
-    - name: Create override directory for docker.service
-      file:
-        path: /etc/systemd/system/docker.service.d
-        state: directory
-        mode: "0755"
-
-    - name: Create override file for docker.service
-      copy:
-        content: |
-          [Unit]
-          Requires=nfs-client.target
-          After=nfs-client.target
-        dest: /etc/systemd/system/docker.service.d/override.conf
-        mode: "0644"
-      notify: Reload systemd
-
 # If an app name was specified, only copy its files
 # Otherwise, copy all files
 
