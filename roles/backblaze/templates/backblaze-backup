@@ -12,7 +12,7 @@ error=0
 cd ~/.config/backblaze;
 
 {% if 'docker' in group_names %}
-/usr/local/bin/docker-compose $(find /opt/doc/*.yml | sed -e "s/^/-f /") stop
+/usr/bin/docker compose $(find {{ compose_dir }} -maxdepth 1 -name "*.yml" | sed -e "s/^/-f /") stop
 {% endif %}
 
 for dir in {{ backblaze_include_dirs }}
@@ -31,7 +31,7 @@ if [[ $error -ne 0 ]] ; then
 fi
 
 {% if 'docker' in group_names %}
-/usr/local/bin/docker-compose $(find /opt/doc/*.yml | sed -e "s/^/-f /") start
+/usr/bin/docker compose $(find {{ compose_dir }} -maxdepth 1 -name "*.yml" | sed -e "s/^/-f /") start
 {% endif %}
 
 # Confirm the finish with healthchecks.io

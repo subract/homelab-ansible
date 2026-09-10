@@ -32,6 +32,9 @@ all:
           app_root: /opt
         larkhaven:
           app_root: /app
+      vars:
+        # Directory for Docker Compose files
+        compose_dir: /opt/doc
 
   vars:
     ansible_python_interpreter: auto_silent

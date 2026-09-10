@@ -1,7 +1,5 @@
 ---
 # Instruct geerlingguy.docker to install Docker Compose
 docker_install_compose: true
-# Directory for Docker Compose files
-compose_dir: /opt/doc/
 # Users to be added to docker group by geerlingguy.docker
 docker_users: ["{{ user }}"]

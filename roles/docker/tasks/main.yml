@@ -8,7 +8,7 @@
     owner: root
     group: root
     block: |
-      alias dc='docker-compose $(find /opt/doc/*.yml | sed -e "s/^/-f /")'
+      alias dc='docker compose $(find {{ compose_dir }} -maxdepth 1 -name "*.yml" | sed -e "s/^/-f /")'
       alias dcls="docker container ls"
       alias dcps="docker container ps"
       alias dcl="docker logs"
@@ -131,7 +131,7 @@
   shell:
     chdir: "{{ compose_dir }}"
     executable: /usr/bin/zsh
-    cmd: set -o pipefail; docker-compose $(find /opt/doc/*.yml | sed -e "s/^/-f /") pull
+    cmd: set -o pipefail; docker compose $(find {{ compose_dir }} -maxdepth 1 -name '*.yml' | sed -e "s/^/-f /") pull
   register: result
   # these "changed_when" conditions aren't quite working yet
   changed_when: "'Pull complete' in result.stdout"
@@ -141,7 +141,7 @@
   shell:
     chdir: "{{ compose_dir }}"
     executable: /usr/bin/zsh
-    cmd: set -o pipefail; docker-compose $(find /opt/doc/*.yml | sed -e "s/^/-f /") up -d --remove-orphans
+    cmd: set -o pipefail; docker compose $(find {{ compose_dir }} -maxdepth 1 -name '*.yml' | sed -e "s/^/-f /") up -d --remove-orphans
   register: result
   changed_when: "'Started' in result.stdout"
 
