@@ -1,0 +1,14 @@
+---
+repos:
+  - repo: local
+    hooks:
+      - id: git-secrets
+        name: git-secrets
+        entry: git secrets --pre_commit_hook --
+        language: system
+        pass_filenames: false
+
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v26.8.0
+    hooks:
+      - id: ansible-lint

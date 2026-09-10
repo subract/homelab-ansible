@@ -44,3 +44,11 @@ Currently managing the following:
 	- [Vikunja](https://vikunja.io/) - to-dos and project management
 
 This is a living repo, evolving as I add and manage additional services. As I tackle the challenges of managing additional systems, I'll expand this repo to include them.
+
+## Development
+
+This repo uses [pre-commit](https://pre-commit.com/) to run [ansible-lint](https://ansible-lint.readthedocs.io/) and [git-secrets](https://github.com/awslabs/git-secrets) before each commit. To set up the hooks:
+
+```sh
+pre-commit install
+```
