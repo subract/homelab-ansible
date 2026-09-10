@@ -3,4 +3,5 @@ skip_list:
   - fqcn-builtins # Shorter names look much cleaner
   - no-handler # Handlers are useful, but split up the code flow too much when
                # their extra features aren't needed
-  - var-naming[no-role-prefix] # The Proxmox role requires specific names
+  - name[casing] # Play names match lowercase hostnames
+  - latest[git] # Dotfiles repos should track latest

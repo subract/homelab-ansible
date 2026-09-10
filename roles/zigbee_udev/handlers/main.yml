@@ -1,6 +1,8 @@
 ---
 - name: Reload udev rules
   command: udevadm control --reload
+  changed_when: false
 
 - name: Trigger udev rules
   command: udevadm trigger
+  changed_when: false

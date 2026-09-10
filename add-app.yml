@@ -1,5 +1,6 @@
 ---
-- hosts: "{{ hostname }}"
+- name: Add app
+  hosts: "{{ hostname }}"
   become: true
 
   vars_prompt:
@@ -30,7 +31,7 @@
 
     - name: Grant user permission to app
       tags: config, acl
-      acl:
+      ansible.posix.acl:
         path: "{{ app_root }}/{{ app }}"
         entity: "{{ user }}"
         etype: user

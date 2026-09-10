@@ -1,9 +1,12 @@
 ---
 - name: Reload udev
   command: udevadm control --reload
+  changed_when: false
 
 - name: Trigger udev
   command: udevadm trigger
+  changed_when: false
 
 - name: Reload systemd
-  command: systemctl daemon-reload
+  systemd:
+    daemon_reload: true

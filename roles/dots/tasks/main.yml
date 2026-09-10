@@ -10,7 +10,7 @@
   tags: dots
   become: true
   become_user: "{{ user }}"
-  git_config:
+  community.general.git_config:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
     scope: global
@@ -22,7 +22,7 @@
   tags: dots
   become: true
   become_user: "{{ user }}"
-  git_config:
+  community.general.git_config:
     name: credential.https://github.com.helper
     value: store
     scope: global

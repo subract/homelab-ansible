@@ -6,3 +6,5 @@ roles:
 collections:
   - name: kewlfft.aur
   - name: artis3n.tailscale
+  - name: community.general
+  - name: ansible.posix

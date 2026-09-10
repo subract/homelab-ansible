@@ -1,5 +1,6 @@
 ---
-- hosts: "{{setupHosts}}"
+- name: Bootstrap hosts
+  hosts: "{{setupHosts}}"
   become: true
 
   vars_prompt:

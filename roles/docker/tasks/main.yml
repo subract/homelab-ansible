@@ -82,7 +82,10 @@
         mode: "0440"
         owner: root
         group: docker
-      ignore_errors: true # file may not exist if not needed
+      register: docker_env_copy
+      failed_when: # file may not exist if not needed
+        - docker_env_copy is failed
+        - "'could not find src' not in docker_env_copy.msg"
 
 - name: Copy compose .env
   tags: docker, compose, env
@@ -92,7 +95,10 @@
     mode: "0440"
     owner: root
     group: docker
-  ignore_errors: true # file may not exist if not needed
+  register: docker_env_copy
+  failed_when: # file may not exist if not needed
+    - docker_env_copy is failed
+    - "'could not find src' not in docker_env_copy.msg"
   when: app is undefined
 
 - name: Pull docker services
@@ -101,9 +107,9 @@
     chdir: "{{ compose_dir }}"
     executable: /usr/bin/zsh
     cmd: set -o pipefail; docker compose $(find {{ compose_dir }} -maxdepth 1 -name '*.yml' | sed -e "s/^/-f /") pull
-  register: result
+  register: docker_result
   # these "changed_when" conditions aren't quite working yet
-  changed_when: "'Pull complete' in result.stdout"
+  changed_when: "'Pull complete' in docker_result.stdout"
 
 - name: Start docker services
   tags: docker, compose, up
@@ -111,8 +117,8 @@
     chdir: "{{ compose_dir }}"
     executable: /usr/bin/zsh
     cmd: set -o pipefail; docker compose $(find {{ compose_dir }} -maxdepth 1 -name '*.yml' | sed -e "s/^/-f /") up -d --remove-orphans
-  register: result
-  changed_when: "'Started' in result.stdout"
+  register: docker_result
+  changed_when: "'Started' in docker_result.stdout"
 
 - name: Prune docker services
   tags: docker, compose,  up
