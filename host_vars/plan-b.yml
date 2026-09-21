@@ -1,0 +1,7 @@
+custom_users:
+  - name: zfs_backup
+    keys:
+      # from larkhaven
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPHXiZ2j+1noPW6WjE0ogfwDfYehuiqYj4r9Ri4jy7DF root@larkhaven
+      # from cepheus
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJIaRmHX1pAn3DPEApqgKDRwYqrMnjy6ZxhNmxjyFyc1 root@cepheus

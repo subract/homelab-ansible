@@ -1,4 +1,11 @@
 ---
+- name: Install wakeonlan
+  tags: backup
+  when: (remote_backup.wol_mac | default('')) | length > 0
+  package:
+    name: wakeonlan
+    state: present
+
 - name: Deploy systemd unit for ZFS remote backup
   tags: backup
   template:
@@ -27,16 +34,18 @@
     mode: "0644"
     content: |
       [Unit]
-      Description=Daily ZFS remote backup at 2 AM
+      Description=ZFS remote backup
 
       [Timer]
-      OnCalendar=*-*-* 02:00:00
+      OnCalendar={{ remote_backup.schedule | default('*-*-* 02:00:00') }}
       Persistent=true
       Unit=zfs-remote-backup.service
 
       [Install]
       WantedBy=timers.target
-  notify: Reload systemd
+  notify:
+    - Reload systemd
+    - Restart zfs-remote-backup timer
 
 - name: Enable and start ZFS remote backup timer
   tags: backup

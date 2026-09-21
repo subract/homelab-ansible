@@ -1,6 +1,0 @@
----
-- name: Restart sanoid
-  tags: config, sanoid
-  service:
-    name: sanoid
-    state: restarted

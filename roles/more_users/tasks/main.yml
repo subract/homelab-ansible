@@ -20,8 +20,8 @@
 - name: Set user authorized keys
   tags: users, config
   ansible.posix.authorized_key:
-    user: "{{ item.name }}"
+    user: "{{ item.0.name }}"
     state: present
-    key: "{{ item.key }}"
-  loop: "{{ custom_users }}"
-  when: item.key is defined
+    key: "{{ item.1 }}"
+  loop: "{{ custom_users | subelements('keys', skip_missing=True) }}"
+  when: custom_users is defined

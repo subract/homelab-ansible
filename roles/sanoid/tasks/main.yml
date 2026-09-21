@@ -1,0 +1,22 @@
+---
+- name: Install sanoid and syncoid
+  tags: pkg, syncoid, sanoid
+  package:
+    name:
+      - sanoid
+
+- name: Create sanoid config dir
+  tags: config, sanoid
+  file:
+    path: /etc/sanoid
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure sanoid
+  tags: config, sanoid
+  copy:
+    src: "{{ inventory_hostname }}/sanoid.conf"
+    dest: /etc/sanoid/sanoid.conf
+    mode: "0644"

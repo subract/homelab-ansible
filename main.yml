@@ -50,7 +50,7 @@
   # gather_facts: false
   ignore_unreachable: true
   roles:
-    - syncoid_sanoid
+    - sanoid
     - zfs_zed
     - zfs_remote_backup
     - role: artis3n.tailscale.machine
@@ -63,6 +63,22 @@
     - zigbee_udev
     - wpa_supplicant
     - liveness_monitor
+    - dots
+
+- name: plan-b
+  hosts: plan-b
+  become: true
+  # gather_facts: false
+  ignore_unreachable: true
+  roles:
+    - more_users
+    - sanoid
+    - zfs_zed
+    - role: artis3n.tailscale.machine
+      tags: tailscale
+      vars:
+        tailscale_args: --advertise-tags=tag:server
+    - apprise
     - dots
 
 - name: Docker roles
@@ -96,7 +112,7 @@
   roles:
     - zfs_zed
     - geerlingguy.ntp
-    # - syncoid_sanoid
+    # - sanoid
     - apprise
 
 - name: cepheus
@@ -111,11 +127,11 @@
     - inhibit_suspend
     - zigbee_udev
     - zfs
-    - role: zfs_zed
-      tags: zed
-    - syncoid_sanoid
+    - zfs_zed
+    - sanoid
     - backblaze
     - apprise
+    - zfs_remote_backup
     # - external_backup
     - role: artis3n.tailscale.machine
       tags: tailscale
