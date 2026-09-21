@@ -1,0 +1,2 @@
+user: subract
+ansible_host: "the-pub.{{ primary_domain }}"
