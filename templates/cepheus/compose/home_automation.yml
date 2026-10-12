@@ -58,6 +58,9 @@ services:
       web:
       mqtt:
 
+    healthcheck:
+      start_period: 30s
+      start_interval: 3s
     environment:
       TZ: "{{ timezone }}"
 
