@@ -74,6 +74,14 @@
         owner: root
         group: docker
 
+    - name: Check for app env file
+      tags: docker, compose
+      delegate_to: localhost
+      become: false
+      stat:
+        path: "files/{{ inventory_hostname }}/docker_env/{{ app }}.env"
+      register: docker_env_file
+
     - name: Copy one env file
       tags: docker, compose
       template:
@@ -82,10 +90,16 @@
         mode: "0440"
         owner: root
         group: docker
-      register: docker_env_copy
-      failed_when: # file may not exist if not needed
-        - docker_env_copy is failed
-        - "'could not find src' not in docker_env_copy.msg"
+      when: docker_env_file.stat.exists
+
+- name: Check for compose .env
+  tags: docker, compose, env
+  delegate_to: localhost
+  become: false
+  stat:
+    path: "{{ role_path }}/files/{{ inventory_hostname }}/docker_env/compose_env"
+  register: docker_compose_env_file
+  when: app is undefined
 
 - name: Copy compose .env
   tags: docker, compose, env
@@ -95,11 +109,9 @@
     mode: "0440"
     owner: root
     group: docker
-  register: docker_env_copy
-  failed_when: # file may not exist if not needed
-    - docker_env_copy is failed
-    - "'could not find src' not in docker_env_copy.msg"
-  when: app is undefined
+  when:
+    - app is undefined
+    - docker_compose_env_file.stat.exists
 
 - name: Pull docker services
   tags: docker, compose, pull
