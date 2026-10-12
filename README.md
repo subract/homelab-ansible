@@ -17,6 +17,7 @@ Currently managing the following:
 		- [Immich](https://immich.app/) - Google Photos replacement
 		- [Gitea](https://gitea.io/en-us/) - lightweight Git hosting
 		- [Drone](https://www.drone.io/) - continuous integration platform handling deployments
+		- [Actual Budget](https://actualbudget.org/)- track finances
 		- [Home Assistant](https://www.home-assistant.io/) - smart home management
 			- Supported by [Zigbee2MQTT](https://www.zigbee2mqtt.io) and [Mosquitto](https://mosquitto.org/)
 		- [Node-RED](https://nodered.org/) - visual scripting for home automation and sundry other tasks

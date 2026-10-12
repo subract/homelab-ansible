@@ -1,0 +1,39 @@
+networks:
+  web:
+
+services:
+  actual:
+    container_name: actual
+    image: ghcr.io/actualbudget/actual:latest
+    restart: unless-stopped
+
+    networks:
+      web:
+
+    environment:
+      TZ: {{ timezone }}
+      ACTUAL_TRUSTED_PROXIES: 172.18.1.1
+      # See https://actualbudget.org/docs/config/ for all options
+
+    volumes:
+      - "{{ app_root }}/actual/data:/data"
+
+    healthcheck:
+      test: ['CMD-SHELL', 'node scripts/health-check.js']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    labels:
+      traefik.enable: true
+      traefik.http.routers.budget.rule: Host(`budget.{{ primary_domain }}`)
+      traefik.http.routers.budget.tls.certresolver: default
+      traefik.http.services.budget.loadbalancer.server.port: 5006
+      homepage.group: Apps
+      homepage.name: Budgeting
+      homepage.icon: actualbudget.png
+      homepage.href: https://budget.{{ primary_domain }}/
+      homepage.weight: 22
+      homepage.description: Actual Budget
+      homepage.siteMonitor: http://actual:5006
