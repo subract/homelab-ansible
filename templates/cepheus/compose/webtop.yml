@@ -5,7 +5,7 @@ services:
   webtop:
     container_name: webtop
     # Pinned version bc updates are so big
-    image: lscr.io/linuxserver/webtop:ubuntu-xfce-kasm-version-bd179731
+    image: registry.gitlab.com/linuxserver.io/docker-webtop/webtop:ubuntu-xfce-version-50a2f178
     restart: unless-stopped
 
     networks:
