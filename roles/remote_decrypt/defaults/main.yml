@@ -1,0 +1,5 @@
+---
+# If set, SSH sessions into the initramfs dropbear immediately run this
+# command (forced command in authorized_keys). e.g. /usr/sbin/zfsunlock
+# Leave empty to get a normal shell on connect.
+remote_decrypt_forced_command: ""

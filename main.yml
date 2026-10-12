@@ -121,6 +121,7 @@
   gather_facts: true
   ignore_unreachable: false
   roles:
+    - remote_decrypt
     - dots
     - more_users
     - geerlingguy.ntp
@@ -132,7 +133,6 @@
     - backblaze
     - apprise
     - zfs_remote_backup
-    # - external_backup
     - role: artis3n.tailscale.machine
       tags: tailscale
       vars:
