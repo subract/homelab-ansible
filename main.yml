@@ -146,6 +146,15 @@
   roles:
     - backblaze
 
+- name: pub-core-router
+  hosts: pub-core-router
+  become: true
+  gather_facts: false
+  ignore_unreachable: true
+  roles:
+    - dots
+    - backblaze
+
 - name: Host-specific tasks
   hosts: all
   gather_facts: false

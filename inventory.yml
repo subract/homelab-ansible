@@ -6,6 +6,7 @@ all:
     plan-b:
     larkhaven:
     the-pub:
+    pub-core-router:
   children:
     docker:
       hosts:
