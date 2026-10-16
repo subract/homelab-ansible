@@ -23,6 +23,10 @@
       - rsync
       - fzf
       - bind9-dnsutils
+      - neovim
+      - cron
+      - just
+      - tree
     state: present
 
 - name: Remove unwanted packages
