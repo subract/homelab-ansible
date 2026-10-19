@@ -19,6 +19,7 @@
       - zsh
       - tmux
       - curl
+      - wget
       - git
       - rsync
       - fzf
