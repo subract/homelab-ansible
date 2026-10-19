@@ -48,6 +48,9 @@ services:
     ports:
       - 80:80
       - 443:443
+      # IMAP/SMTP
+      - "465:465"
+      - "993:993"
 
     env_file:
       - traefik.env

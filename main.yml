@@ -146,6 +146,14 @@
   roles:
     - backblaze
 
+- name: pm-bridge
+  hosts: pm-bridge
+  become: true
+  gather_facts: false
+  ignore_unreachable: true
+  roles:
+    - dots
+
 - name: pub-core-router
   hosts: pub-core-router
   become: true
