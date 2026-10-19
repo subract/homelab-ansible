@@ -16,7 +16,7 @@ Currently managing the following:
 			- With [Collabora](https://www.collaboraonline.com/) - online office suite for document editing
 		- [Immich](https://immich.app/) - Google Photos replacement
 		- [Gitea](https://gitea.io/en-us/) - lightweight Git hosting
-		- [Drone](https://www.drone.io/) - continuous integration platform handling deployments
+		    - [Gitea Runner](https://gitea.com/gitea/runner) - runner for [Gitea Actions](https://docs.gitea.com/usage/actions/overview)
 		- [Actual Budget](https://actualbudget.org/)- track finances
 		- [Home Assistant](https://www.home-assistant.io/) - smart home management
 			- Supported by [Zigbee2MQTT](https://www.zigbee2mqtt.io) and [Mosquitto](https://mosquitto.org/)

@@ -1,6 +1,5 @@
 networks:
   web:
-  drone:
 
 services:
   gitea:
@@ -16,12 +15,11 @@ services:
       USER_GID: 4002
       GITEA__SERVER__ROOT_URL: https://git.{{ primary_domain }}
       GITEA__SERVICE__DISABLE_REGISTRATION: true
-      GITEA__MIGRATIONS__ALLOW_LOCALNETWORKS: true
       GITEA__INDEXER__REPO_INDEXER_ENABLED: true
-      GITEA__WEBHOOK__ALLOWED_HOST_LIST: "*.{{ primary_domain }}"
+      GITEA__ACTIONS__ENABLED: true
 
     volumes:
-      - "{{ app_root }}/gitea:/data"
+      - "{{ app_root }}/gitea/data:/data"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
@@ -42,54 +40,22 @@ services:
       homepage.siteMonitor: http://gitea
       homepage.weight: 50
 
-  drone:
-    container_name: drone
-    image: drone/drone:2
+  gitea-runner:
+    container_name: gitea-runner
+    image: gitea/runner:latest-dind
     restart: unless-stopped
-    user: 4002:4002
 
-    networks:
-      web:
-      drone:
+    # dind runs its own Docker daemon for jobs
+    privileged: true
 
-    env_file: drone.env
+    env_file: git.env
     environment:
-      DRONE_GITEA_SERVER: https://git.{{ primary_domain }}
-      DRONE_SERVER_HOST: drone.{{ primary_domain }}
-      DRONE_SERVER_PROTO: https
-      DRONE_DATADOG_ENABLED: false
+      GITEA_INSTANCE_URL: https://git.{{ primary_domain }}
+      GITEA_RUNNER_NAME: roger-bannister
+      GITEA_RUNNER_LABELS: ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest
 
     volumes:
-      - "{{ app_root }}/drone:/data"
+      - "{{ app_root }}/gitea/runner:/data"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
-    labels:
-      traefik.enable: true
-      traefik.http.routers.drone.rule: Host(`drone.{{ primary_domain }}`)
-      traefik.http.routers.drone.tls.certresolver: default
-      traefik.http.services.drone.loadbalancer.server.port: 80
-      traefik.http.routers.drone.middlewares: authelia
-      homepage.group: Apps
-      homepage.name: CI/CD
-      homepage.icon: drone.png
-      homepage.href: https://drone.{{ primary_domain }}/
-      homepage.description: Drone
-      homepage.siteMonitor: http://drone
-      homepage.weight: 55
-
-  runner:
-    container_name: runner
-    restart: unless-stopped
-    image: drone/drone-runner-docker:1
-
-    networks:
-      drone:
-
-    env_file: drone.env
-    environment:
-      DRONE_RPC_PROTO: http
-      DRONE_RPC_HOST: drone
-      DRONE_RUNNER_CAPACITY: 2
-      DRONE_RUNNER_NAME: roger-bannister
-
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
