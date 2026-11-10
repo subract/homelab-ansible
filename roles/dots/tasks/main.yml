@@ -5,27 +5,36 @@
     name:
       - git
       - stow
+      - starship
+
+- name: Resolve user home directories
+  tags: dots
+  getent:
+    database: passwd
 
 - name: Set global git identity
   tags: dots
   become: true
-  become_user: "{{ user }}"
+  become_user: "{{ item[0] }}"
   community.general.git_config:
-    name: "{{ item.key }}"
-    value: "{{ item.value }}"
+    name: "{{ conf.key }}"
+    value: "{{ conf.value }}"
     scope: global
-  loop:
-    - { key: user.name, value: "subract" }
-    - { key: user.email, value: "self@subract.dev" }
+  loop: "{{ dots_users | product([{'key': 'user.name', 'value': 'subract'}, {'key': 'user.email', 'value': 'self@subract.dev'}]) }}"
+  loop_control:
+    label: "{{ item[0] }}: {{ item[1].key }}"
+  vars:
+    conf: "{{ item[1] }}"
 
 - name: Use credential store for github.com
   tags: dots
   become: true
-  become_user: "{{ user }}"
+  become_user: "{{ item }}"
   community.general.git_config:
     name: credential.https://github.com.helper
     value: store
     scope: global
+  loop: "{{ dots_users }}"
 
 - name: Store GitHub dotfiles PAT
   tags: dots
@@ -33,35 +42,45 @@
   no_log: true
   copy:
     content: "https://subract:{{ github_dotfiles_pat }}@github.com\n"
-    dest: /home/{{ user }}/.git-credentials
+    dest: "{{ ansible_facts.getent_passwd[item][4] }}/.git-credentials"
     mode: "0600"
-    owner: "{{ user }}"
-    group: "{{ user }}"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+  loop: "{{ dots_users }}"
 
 - name: Clone dotfiles
   tags: dots
   become: true
-  become_user: "{{ user }}"
+  become_user: "{{ item }}"
   git:
     repo: https://github.com/subract/dotfiles.git
-    dest: /home/{{ user }}/.dotfiles
+    dest: "{{ ansible_facts.getent_passwd[item][4] }}/.dotfiles"
+  loop: "{{ dots_users }}"
   register: dots_clone
   failed_when: false
 
 - name: Warn if dotfiles clone/pull failed
   tags: dots
-  when: dots_clone.failed | default(false)
+  when: item.failed | default(false)
   debug:
     msg: >-
-      WARNING: Could not clone/pull dotfiles at /home/{{ user }}/.dotfiles
+      WARNING: Could not clone/pull dotfiles at {{ item.dest }}
       (local changes?). Skipping; continuing playbook.
-      Error: {{ dots_clone.msg | default('unknown') }}
+      Error: {{ item.msg | default('unknown') }}
+  loop: "{{ dots_clone.results }}"
+  loop_control:
+    label: "{{ item.item }}"
 
-- name: Clone oh-my-zsh
-  tags: dots, zsh
+- name: Stow dotfiles packages
+  tags: dots
   become: true
-  become_user: "{{ user }}"
-  git:
-    repo: https://github.com/ohmyzsh/ohmyzsh.git
-    dest: /home/{{ user }}/.oh-my-zsh
-    depth: 1
+  become_user: "{{ item[0] }}"
+  command:
+    cmd: "stow --dotfiles --dir={{ dots_home }}/.dotfiles --target={{ dots_home }} {{ item[1] }}"
+  loop: "{{ dots_users | product(dots_stow_packages) }}"
+  loop_control:
+    label: "{{ item[0] }}: {{ item[1] }}"
+  register: dots_stow
+  changed_when: dots_stow.stdout != ''
+  vars:
+    dots_home: "{{ ansible_facts.getent_passwd[item[0]][4] }}"

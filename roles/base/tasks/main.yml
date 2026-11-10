@@ -36,19 +36,6 @@
       - nano
     state: absent
 
-- name: Install zsh-grml-config
-  tags: zsh, config
-  copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "0644"
-    owner: root
-    group: root
-  loop:
-    - { src: zshrc, dest: /etc/zsh/zshrc }
-    - { src: zshrc-skel, dest: /etc/skel/.zshrc }
-    - { src: zshrc-skel, dest: /etc/zsh/newuser.zshrc.recommended }
-
 - name: Set shells to zsh
   tags: zsh, config
   user:

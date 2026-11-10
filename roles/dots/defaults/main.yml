@@ -1,0 +1,11 @@
+---
+# Users to provision dotfiles for. Home directories are resolved via getent,
+# so /root and non-/home homes work automatically.
+dots_users:
+  - "{{ user }}"
+  - root
+
+# Stow packages to link from ~/.dotfiles. Add more per host with
+# dots_stow_extra (e.g. in host_vars/<host>.yml: dots_stow_extra: [git, tmux]).
+dots_stow_extra: []
+dots_stow_packages: "{{ ['zsh', 'bin'] + dots_stow_extra }}"
