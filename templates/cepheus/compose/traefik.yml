@@ -55,6 +55,9 @@ services:
     env_file:
       - traefik.env
 
+    environment:
+      TRAEFIK_LIFECYCLE_GRACETIMEOUT: 2s
+
     networks:
       web:
         # Some apps need to be able to depend on the IP of the trusted proxies
