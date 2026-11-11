@@ -145,6 +145,7 @@
   ignore_unreachable: true
   roles:
     - backblaze
+    - dots
 
 - name: pm-bridge
   hosts: pm-bridge
