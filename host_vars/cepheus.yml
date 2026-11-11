@@ -25,8 +25,12 @@ remote_backup:
     - src: rpool
       dest: hdd/backups/cepheus/rpool
       raw: true
-    - src: bpool
-      dest: hdd/backups/cepheus/bpool
+    # bpool is intentionally excluded. It only holds the boot environment
+    # (kernels/initramfs/GRUB), which is trivially reproducible from Ubuntu
+    # archives, and the pool is too small (~960M) to snapshot without
+    # risking a full pool that breaks kernel installs. Without snapshots,
+    # syncoid (--no-sync-snap) would also fail on it with no snapshots to send.
+    # See sanoid.conf for the corresponding decision on bpool snapshots.
 
 backblaze_include_dirs: /app
 backblaze_healthcheck_id: !vault |-
