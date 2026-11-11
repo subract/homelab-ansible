@@ -5,7 +5,7 @@ services:
   webtop:
     container_name: webtop
     # Pinned version bc updates are so big
-    image: registry.gitlab.com/linuxserver.io/docker-webtop/webtop:ubuntu-xfce-version-50a2f178
+    image: registry.gitlab.com/linuxserver.io/docker-webtop/webtop:amd64-version-c12f099b
     restart: unless-stopped
 
     networks:
